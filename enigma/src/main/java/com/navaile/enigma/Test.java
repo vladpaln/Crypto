@@ -167,17 +167,17 @@ public class Test {
 //		System.out.println(text.substring(0, 9));
 //		System.out.println(text.substring(9, text.length()));
 
-		String path = "src/main/resources/directory";
-		Directory dic = Directory.getInstance(path);
-		
-		char[] charArr = new char[] {
-			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '`',
-			'~', '?', ':', '"', '\'', '_', '*', '-', '+', '=',
-			'.', ',', '<', '>', '!', '@', '#', '%', '^', '&', '$'
-		};
-		
-		for(char c: charArr)
-			System.out.println("directory test: " + c + "|" + dic.getKeyCode(String.valueOf(c)));
+//		String path = "src/main/resources/directory";
+//		Directory dic = Directory.getInstance(path);
+//		
+//		char[] charArr = new char[] {
+//			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '`',
+//			'~', '?', ':', '"', '\'', '_', '*', '-', '+', '=',
+//			'.', ',', '<', '>', '!', '@', '#', '%', '^', '&', '$'
+//		};
+//		
+//		for(char c: charArr)
+//			System.out.println("directory test: " + c + "|" + dic.getKeyCode(String.valueOf(c)));
 	}
 	
 }

@@ -10,6 +10,7 @@ import com.zackehh.siphash.SipHashResult;
 import java.text.NumberFormat;
 import java.util.*;
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,37 +51,15 @@ public class Enigma4K {
 	private static Random RND;
 	private static long seed;
 	
-	private static int rotorCount = COUNT_MIN;
-	private static int plugboardCount = COUNT_MIN;
-	private static int matrixSize = -1;
-	
 	private static Directory directory;
+
+	private static int[][] roMatrix;
+	private static int[][] pbMatrix;
 	
-	private static int[][] matrix;
-	
-	/** List of rotors	*/			private static final HashMap<Long, Integer> matrixMap = new HashMap<>();
-	/** Rotor order		*/			private static long[] rotorOrder;
-	/** Plugboard order	*/			private static long[] plugboardOrder;
-	
-	// diferent for each message
 	/** Rotor Key		*/			private static int[] rotorKey;
+	/** Index for each rotor */		private static int[] rotorIndex;
 	/** Rotor Direction */			private static int[] rotorDirectionSpin;
 	/** Rotor Step Size */			private static int[] rotorStepSize;
-	
-	// rotor index starts with the key and slowly rotates
-	/** Index for each rotor */		private static int[] rotorIndex;
-	
-	private static String plainText;
-	private static String cryptText;
-	
-
-	/***************************************************************************
-	 * TODO
-	 * 
-	 * source: http://www.cryptomuseum.com/crypto/enigma/working.htm
-	 * - A letter can never be encoded into itself
-	 * - Regular stepping of the wheels
-	 */
 
 	
 	/**
@@ -98,7 +77,7 @@ public class Enigma4K {
 		
 		BasicConfigurator.configure();
 //		org.apache.log4j.Logger logger4j = org.apache.log4j.Logger.getRootLogger();
-//			logger4j.setLevel(org.apache.log4j.Level.toLevel("ERROR"));
+//			logger4j.setLevel(Level.ERROR);
 		
 		LOG.info("ini AdvEnigma(" + rotorCount + ", " + pbCount + ")");
 		
@@ -113,12 +92,8 @@ public class Enigma4K {
 		if(rotorCount < COUNT_MIN)		rotorCount = COUNT_MIN;
 		if(pbCount < COUNT_MIN)			pbCount = COUNT_MIN;
 		
-		Enigma4K.rotorCount = rotorCount;
-		Enigma4K.plugboardCount = pbCount;
-		Enigma4K.matrixSize = rotorCount + pbCount;
-		
 		LOG.info("ini AdvEnigma: genKey, copy to rotorIndex");
-		Enigma4K.rotorKey = genKey();
+		Enigma4K.rotorKey = genKey(rotorCount);
 		Enigma4K.rotorIndex = Enigma4K.rotorKey.clone();
 		
 		Enigma4K.rotorDirectionSpin = new int[Enigma4K.rotorKey.length];
@@ -129,44 +104,29 @@ public class Enigma4K {
 		for(int i = 0; i < Enigma4K.rotorStepSize.length; i++)
 			Enigma4K.rotorStepSize[i] = nextSeed(31 + 1);
 		
-		Enigma4K.plugboardOrder = new long[Enigma4K.plugboardCount];
-		Enigma4K.rotorOrder = new long[Enigma4K.rotorCount];
-		
-		Enigma4K.matrix = new int[Enigma4K.matrixSize][];
-		
 		/**
 		 * TODO
 		 * 
-		 * This needs to be changed, seeds will have to be generated based on
-		 * pass phrase and TIMESTAMP, key/rotors/Pb seeds need to be generated
-		 * from pass phrase and TIMESTAMP during encryption.
 		 */
 		
-		LOG.info("ini AdvEnigma: generate random rotorsPb");
-		for(int i = 0; i < matrix.length; i++) {
-			
-			Long ID = nextSeed();
-			matrix[i] = genRotorPb(ID);
-			matrixMap.put(ID, i);
-			
-			if(i < plugboardOrder.length)	plugboardOrder[i] = ID;
-			else		rotorOrder[i - plugboardOrder.length] = ID;
-		}
+		LOG.info("ini AdvEnigma: generate random rotors/plugboards");
+
+		Enigma4K.roMatrix = new int[rotorCount][];
+		for(int i = 0; i < roMatrix.length; i++)
+			roMatrix[i] = genRotorPb(nextSeed());
+		
+		Enigma4K.pbMatrix = new int[pbCount][];
+		for(int i = 0; i < pbMatrix.length; i++)
+			pbMatrix[i] = genRotorPb(nextSeed());
 		
 		memory();
-		
-		LOG.info("Matrix: " + matrix.length);
 		
 		LOG.info("Rotor Count: " + rotorCount);
 		LOG.info("Rotor Key: " + Arrays.toString(rotorKey));
 		LOG.info("Rotor Direction: " + Arrays.toString(Enigma4K.rotorDirectionSpin));
 		LOG.info("Rotor Step Size: " + Arrays.toString(Enigma4K.rotorStepSize));
 		
-		LOG.info("-- Keys --");
-		matrixMap.forEach((K, V) -> {	LOG.info(K + ", " + V);		});
-		LOG.info("-- END Keys --");
-		
-		LOG.info("Plugboard Count: " + plugboardCount);
+		LOG.info("Plugboard Count: " + pbCount);
 	}
 	
 	/**
@@ -208,7 +168,7 @@ public class Enigma4K {
 	 * 
 	 * @return a random key
 	 */
-	private static int[] genKey() {
+	private static int[] genKey(int rotorCount) {
 		
 		int[] newKey = new int[rotorCount];
 		for (int i = 0; i < newKey.length; i++)
@@ -325,8 +285,11 @@ public class Enigma4K {
 		
 		/* plugboard substitution
 		 * each word is substituted using a different plugboard		*/
-		long pbID = plugboardOrder[wordIndex % plugboardCount];
-		int[] plugboard = matrix[matrixMap.get(pbID)];
+//		long pbID = plugboardOrder[wordIndex % plugboardCount];
+//		int[] plugboard = matrix[matrixMap.get(pbID)];
+		
+		int pbID = wordIndex % pbMatrix.length;
+		int[] plugboard = pbMatrix[pbID];
 		
 		int nWordCode = plugboard[wordCode];
 		
@@ -347,17 +310,19 @@ public class Enigma4K {
 		LOG.info("START rotorEncrypt() wordCode: " + wordCode);
 
 		// rotor encrypt
-		for(int rotorNum = 0; rotorNum < rotorOrder.length; rotorNum++) {
+		for(int roID = 0; roID < roMatrix.length; roID++) {
 			
-			long rotorID = rotorOrder[rotorNum];
-			int[] rotor = matrix[matrixMap.get(rotorID)];
+//			long rotorID = rotorOrder[roID];
+//			int[] rotor = matrix[matrixMap.get(rotorID)];
+			
+			int[] rotor = roMatrix[roID];
 
-			int index = ((rotorIndex[rotorNum] + wordCode) % DIR_SIZE);
+			int index = ((rotorIndex[roID] + wordCode) % DIR_SIZE);
 			int eWordCode = rotor[index];
 			
-			LOG.info("rotorID: " + rotorID + ", rotorIndex[" + rotorNum + "]: " +
-				rotorIndex[rotorNum] + ", wordCode: " + wordCode + ", index: " +
-				index + ", eWordCode: " + eWordCode);
+			LOG.info("rotorIndex[" + roID + "]: " + rotorIndex[roID] +
+				", wordCode: " + wordCode + ", index: " + index +
+				", eWordCode: " + eWordCode);
 			wordCode = eWordCode;
 		}
 		
@@ -435,8 +400,11 @@ public class Enigma4K {
 		
 		/* plugboard substitution
 		 * each word is substituted using a different plugboard		*/
-		long pbID = plugboardOrder[wordIndex % plugboardCount];
-		int[] plugboard = matrix[matrixMap.get(pbID)];
+//		long pbID = plugboardOrder[wordIndex % plugboardCount];
+//		int[] plugboard = matrix[matrixMap.get(pbID)];
+		
+		int pbID = wordIndex % pbMatrix.length;
+		int[] plugboard = pbMatrix[pbID];
 		
 		int wordCodeIndex = -1;
 		for(int i = 0; i < plugboard.length; i++)
@@ -462,18 +430,20 @@ public class Enigma4K {
 		LOG.info("START rotorDecrypt() eWordCode: " + eWordCode);
 		
 		// rotor decrypt
-		for(int rotorNum = rotorOrder.length - 1; rotorNum >= 0; rotorNum--) {
+		for(int roID = roMatrix.length - 1; roID >= 0; roID--) {
 			
-			long rotorID = rotorOrder[rotorNum];
-			int[] rotor = matrix[matrixMap.get(rotorID)];
+//			long rotorID = rotorOrder[rotorNum];
+//			int[] rotor = matrix[matrixMap.get(rotorID)];
+			
+			int[] rotor = roMatrix[roID];
 
 			for(int index = 0; index < rotor.length; index++)
 				if(rotor[index] == eWordCode) {
 					
-					int newWordCode = ((((index - rotorIndex[rotorNum]) % DIR_SIZE) + DIR_SIZE) % DIR_SIZE);
-					LOG.info("rotorID: " + rotorID + ", eWordCode: " + eWordCode +
-						", index: " + index + ", rotorIndex[" + rotorNum + "]: " +
-						rotorIndex[rotorNum] + ", newWordCode: " + newWordCode);
+					int newWordCode = ((((index - rotorIndex[roID]) % DIR_SIZE) + DIR_SIZE) % DIR_SIZE);
+					LOG.info("roID: " + roID + ", eWordCode: " + eWordCode +
+						", index: " + index + ", rotorIndex[" + roID + "]: " +
+						rotorIndex[roID] + ", newWordCode: " + newWordCode);
 					
 					eWordCode = newWordCode;
 					break;

@@ -59,20 +59,20 @@
 
 <body>
 	<div style="float: left; display: table;">
-	<h1>Enigma 4K</h1>
+	<h1 style="cursor: pointer;" onclick="window.location.reload(false);">Enigma 4K</h1>
 	<form action="/enigma/index" method="POST" autocomplete="off">
 		<div>	<label>Rotor #</label>
 				<input class="right" type="text" name="rotorCount" value="${rotorCount}" size="3" /><span>(97 - 4K)</span>
-				<label style="padding-left: 100px;">Msg ID:</label><span>${msgID}</span>
+				<!-- <label style="padding-left: 100px;">Msg ID:</label><span>${msgID}</span> -->
 		</div>
 		<div>	<label>Plugboard #</label>
 				<input class="right" type="text" name="pbCount" value="${pbCount}" size="3" /><span>(97 - 4K)</span></div>
 		<br />
+		<div>	<label class="${handleErr}">Recipient</label>
+				<input type="text" name="handle" value="${handle}" placeholder="Recipient Name, Email or Handle (case sensitive)" size="50" />
+		</div>
 		<div>	<label class="${passPhraseErr}">Crypt Phrase</label>
 				<input type="text" name="passPhrase" size="80" value="${passPhrase}" placeholder="Crypt Phrase or Password (case sensitive)"/>
-		</div>
-		<div>	<label class="${handleErr}">Email/Handle</label>
-				<input type="text" name="handle" value="${handle}" placeholder="Recipient Email or Handle (case sensitive)" size="40" />
 		</div>
 		<br />
 		<div><label style="width: 500px;" class="${textErr}">Text <span style="font-size: 8pt;">(allowed chars: A-Za-z, 0-9, standard punctuation)</span></label></div>
@@ -100,7 +100,7 @@
 		46,655 values.<br /><br />
 		
 		Features<br />
-		- each message with have a different seed<br />
+		- each message will have a different seed<br />
 		- no reflector, value can map to itself<br />
 		- random step size for each rotor<br />
 		- random direction rotor rotation<br /><br />
