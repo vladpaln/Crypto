@@ -37,6 +37,10 @@ String path = "src/main/resources/directory";
 int roCount = Enigma4K.COUNT_MIN;		// rotor count
 int pbCount = Enigma4K.COUNT_MIN;		// plugboard count
 Enigma4K enigma = new Enigma4K(path, "pass phrase", "handle", msgID, roCount, pbCount);
+
+String 	plainText = "some text";
+String 	cryptText = enigma.encryptText(plainText);
+		plainText = enigma.decryptText(cryptText);
 ```
 
 ## TODO
