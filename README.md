@@ -44,6 +44,7 @@ plainText = enigma.decryptText(cryptText);
 ```
 
 ## TODO
+- optimize code
 - create unit tests
 - upgrade to 8K rotors by using shorts
 - add randomize directory feature
