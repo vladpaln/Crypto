@@ -20,12 +20,14 @@ An advanced version of the enigma machine.
 - accepted text characters: A-Z, a-z, 0-9, standard punctuation
 
 ### Encrypt Usage
+- enter rotor/plugboard count
 - enter pass phrase, this can be anything (both parties must have this information)
 - enter recipient email/handle, this can be anything recipient specific (both parties must have this information)
 - enter text
 - hit encrypt button
 
 ### Decrypt Usage
+- enter rotor/plugboard count
 - enter pass phrase (same as used to encrypt message)
 - enter recipient email/handle (same as used to encrypt message)
 - enter encrypted text
