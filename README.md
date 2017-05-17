@@ -30,6 +30,15 @@ An advanced version of the enigma machine.
 - enter encrypted text
 - hit decrypt button
 
+## Embedded Usage
+```
+String msgID = Enigma4K.genMsgID();
+String path = "src/main/resources/directory";
+int roCount = Enigma4K.COUNT_MIN;		// rotor count
+int pbCount = Enigma4K.COUNT_MIN;		// plugboard count
+Enigma4K enigma = new Enigma4K(path, "pass phrase", "handle", msgID, roCount, pbCount);
+```
+
 ## TODO
 - create unit tests
 - upgrade to 8K rotors by using shorts
