@@ -46,6 +46,8 @@ plainText = enigma.decryptText(cryptText);
 ## TODO
 - create unit tests
 - upgrade to 8K rotors by using shorts
+- add randomize directory feature
+- add directory edit page
 
 ## Dependencies
 - Apache Commons
