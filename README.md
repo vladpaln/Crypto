@@ -57,8 +57,8 @@ plainText = enigma.decryptText(cryptText);
 - junit
 
 ## References
-https://en.wikipedia.org/wiki/Enigma_machine
-https://en.wikipedia.org/wiki/Enigma_rotor_details
+https://en.wikipedia.org/wiki/Enigma_machine  
+https://en.wikipedia.org/wiki/Enigma_rotor_details  
 https://en.wikipedia.org/wiki/Fialka
 
 
