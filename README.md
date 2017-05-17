@@ -37,8 +37,8 @@ An advanced version of the enigma machine.
 ```
 String msgID = Enigma4K.genMsgID();
 String path = "src/main/resources/directory";
-int roCount = Enigma4K.COUNT_MIN;		// rotor count
-int pbCount = Enigma4K.COUNT_MIN;		// plugboard count
+int roCount = Enigma4K.COUNT_MIN;		// rotor count 97 - 4,000
+int pbCount = Enigma4K.COUNT_MIN;		// plugboard count 97 - 500
 Enigma4K enigma = new Enigma4K(path, "pass phrase", "handle", msgID, roCount, pbCount);
 
 String 	plainText = "some secret message";
