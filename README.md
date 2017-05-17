@@ -10,15 +10,17 @@ Features
 - no reflector, value can map to itself
 - random step size for each rotor
 - random direction rotor rotation
-- random seed generation, Enigma4K will never encrypt a message using the same settings
+- same pass phrase & recipient handle can be used for all messages
+- random seed generation, Enigma4K will never encrypt a message using the same rotor/plugboard settings
 
-Usage  
-- run code  
-- go to http://localhost:8084/enigma  
+Usage
+- run code
+- go to http://localhost:8084/enigma
+- accepted text characters: A-Z, a-z, 0-9, standard punctuation
 
 Encrypt Usage
-- enter pass phrase, this can be anything (both parties must have this information)  
-- enter recipient email/handle, this can be anything recipient specific (both parties must have this information)  
+- enter pass phrase, this can be anything (both parties must have this information)
+- enter recipient email/handle, this can be anything recipient specific (both parties must have this information)
 - enter text
 - hit encrypt buttom
 
@@ -27,5 +29,4 @@ Decrypt Usage
 - enter reipient email/handle (same as used to encrypt message)
 - enter encrypted text
 - hit decrypt buttom
-
 
