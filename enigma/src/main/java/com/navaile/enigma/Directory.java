@@ -7,9 +7,7 @@ package com.navaile.enigma;
 
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.text.BreakIterator;
 import java.util.*;
 import org.apache.commons.lang3.text.StrBuilder;
@@ -26,11 +24,6 @@ public class Directory {
 	private static final Logger LOG = LoggerFactory.getLogger(Directory.class);
 	
 	private static String path;
-	
-	/** Word count reserved for custom vocab.		*/
-	public static final int CUST_VOCAB_SIZE = 5_000;		// custom vocabulary size
-	
-	public Integer version = null;
 	
 	private static Directory dir;
 	
@@ -53,7 +46,7 @@ public class Directory {
 	}
 	
 	/**
-	 * Preprocess text, replace all digits and symbols with word equivalent.
+	 * Preprocess text, replace punctuation with word equivalent.
 	 * 
 	 * @param msg
 	 * @return 
@@ -65,33 +58,34 @@ public class Directory {
 			newMsg
 			
 			.replaceAll("\\r\\n|\\r|\\n", " ")
-			.replaceAll("/", " forward slash ")
+//			.replaceAll("/", " forward slash ")
 			.replaceAll("\\", " backward slash ")
-			.replaceAll("", "  ")
+//			.replaceAll("", "  ")
 			.replaceAll("\\n", " ")
 			.replaceAll("\\r", " ")
 			.replaceAll(System.getProperty("line.separator"), " ")
 
-			.replaceAll("*", " asterisk ")
-			.replaceAll("-", " minus ")
-			.replaceAll("+", " plus ")
-			.replaceAll("=", " equals ")
-			.replaceAll(".", " period ")
-			.replaceAll(",", " comma ")
-			.replaceAll("<", " less than ")
-			.replaceAll(">", " greater than ")
+//			.replaceAll("/", " division ")
+//			.replaceAll("*", " asterisk ")
+//			.replaceAll("-", " minus ")
+//			.replaceAll("+", " plus ")
+//			.replaceAll("=", " equals ")
+//			.replaceAll(".", " period ")
+//			.replaceAll(",", " comma ")
+//			.replaceAll("<", " less than ")
+//			.replaceAll(">", " greater than ")
+//			
+//			.replaceAll("`", " acute ")
+//			.replaceAll("~", " tilde ")
+//			.replaceAll("?", " question mark ")
+//			.replaceAll(":", " colon ")
+//			.replaceAll(";", " semicolon ")
+//			.replaceAll("\"", " double quote ")
+//			.replaceAll("'", " single quote ")
+//			.replaceAll("|", " pipe ")
+//			.replaceAll("_", " underscore ")
 			
-			.replaceAll("`", " acute ")
-			.replaceAll("~", " tilde ")
-			.replaceAll("?", " question mark ")
-			.replaceAll(":", " colon ")
-			.replaceAll(";", " semicolon ")
-			.replaceAll("\"", " double quote ")
-			.replaceAll("'", " single quote ")
-			.replaceAll("|", " pipe ")
-			.replaceAll("_", " underscore ")
-			
-			.replaceAll("!", " exclamation ")
+//			.replaceAll("!", " exclamation ")
 			.replaceAll("@", " at ")
 			.replaceAll("#", " hashtag ")
 			.replaceAll("%", " percent ")
@@ -103,11 +97,11 @@ public class Directory {
 			.replaceAll("}", " close curly brace ")
 			.replaceAll("[", " open square bracket ")
 			.replaceAll("]", " close square bracket ")
-			.replaceAll("(", " open parenthese ")
-			.replaceAll(")", " close parenthese ")
+//			.replaceAll("(", " open parenthese ")
+//			.replaceAll(")", " close parenthese ")
 
 			/*		currency		*/
-			.replaceAll("$", " dollars ")
+//			.replaceAll("$", " dollars ")
 			.replaceAll("¢", " cents ")
 			.replaceAll("€", " euro ")
 			.replaceAll("¤", " currency sign ")
@@ -130,24 +124,8 @@ public class Directory {
 	 */
 	public String[] parceWords(String text) {
 		
-		text = preprocess(text);	// remove punctuation
+		text = preprocess(text);
 		return text.split(" ");
-
-//		ArrayList<String> words = new ArrayList<>();
-//		BreakIterator breakIterator = BreakIterator.getWordInstance();
-//			breakIterator.setText(text);
-//			
-//		int lastIndex = breakIterator.first();
-//		while(BreakIterator.DONE != lastIndex) {
-//			int firstIndex = lastIndex;
-//			lastIndex = breakIterator.next();
-//
-//			if(lastIndex != BreakIterator.DONE && Character.isLetterOrDigit(text.charAt(firstIndex))) {
-//				words.add(text.substring(firstIndex, lastIndex));
-//			}
-//		}
-//
-//		return words.toArray(new String[words.size()]);
 	}
 
 	/** Converts word to keyCode.	*/
@@ -171,6 +149,7 @@ public class Directory {
 	 * http://www.insightin.com/esl/
 	 * https://github.com/first20hours/google-10000-english
 	 * 
+	 * 
 	 */
 	
 	// directory
@@ -180,23 +159,18 @@ public class Directory {
 	private void loadDictionary() {
 		
 		LOG.info("Directory.loadDictionary()");
-			
+		
+		int index = 0;
 		try(BufferedReader br = new BufferedReader(new FileReader(path))) {
 			
-			for(String line; (line = br.readLine()) != null; ) {
-				
-				String[] splitStr = line.split("\\|");
+			for(String word; (word = br.readLine()) != null; ) {
 
-				if(line.length() != 0 && !line.contains("##")) {
+				if(word.length() != 0) {
 
-					int index = Integer.parseInt(splitStr[0]);
-					String word = splitStr[1];
-
+					word = word.trim();
 					freqKeyWord.put(index, word);
 					freqWordKey.put(word, index);
-				}
-				else if(line.contains("## ver")) {
-					version = Integer.parseInt(splitStr[1]);
+					index++;
 				}
 			}
 		}
@@ -204,7 +178,7 @@ public class Directory {
 	}
 	
 	/** Builds directory from word frequency lists.			*/
-	public static void buildDirectory() {
+	private static void buildDirectory() {
 		
 		Set<String> wordSet = new HashSet<>();
 		
@@ -214,9 +188,9 @@ public class Directory {
 			"src/main/resources/60k_words.txt"
 		};
 		
-		for(String path: fileList) {
+		for(String p: fileList) {
 			
-			try(BufferedReader br = new BufferedReader(new FileReader(path))) {
+			try(BufferedReader br = new BufferedReader(new FileReader(p))) {
 				for(String line; (line = br.readLine()) != null; ) {
 					if(line.length() != 0)		wordSet.add(line.toLowerCase());
 					if(wordSet.size() >= (Enigma4K.DIR_SIZE - 50))	break;
@@ -228,74 +202,49 @@ public class Directory {
 		// directory
 		try(PrintWriter pw = new PrintWriter("src/main/resources/directory", "UTF-8")) {
 			
-			int index = 0;
-			for(String word: wordSet)		pw.println(index++ + "|" + word);
-			pw.println(index++ + "|--- CUST ---");
+			for(String word: wordSet)		pw.println(word.trim());
+			pw.println("--- CUST ---");
 			
 			// word partitioning
-			pw.println(index++ + "|[");
-			pw.println(index++ + "|]");
+			pw.println("[");
+			pw.println("]");
 			
 			// number partitioning
-			for(int i = 0; i <= 9; i++)		pw.println(index++ + "|" + i);
+			for(int i = 0; i <= 9; i++)		pw.println(i);
 			
 //			// symbols
-//			pw.println(index++ + "|`");
-//			pw.println(index++ + "|~");
-//			pw.println(index++ + "|?");
-//			pw.println(index++ + "|:");
-//			pw.println(index++ + "|\"");
-//			pw.println(index++ + "|'");
-//			pw.println(index++ + "|_");		
+			pw.println("`");
+			pw.println("~");
+			pw.println("?");
+			pw.println(":");
+			pw.println(";");
+			pw.println("\"");
+			pw.println("'");
+			pw.println("_");
+			pw.println("|");
+
+			pw.println("/");
+			pw.println("*");
+			pw.println("-");
+			pw.println("+");
+			pw.println("=");
+			pw.println(".");
+			pw.println(",");
+			pw.println("<");
+			pw.println(">");
 //			
-//			pw.println(index++ + "|*");
-//			pw.println(index++ + "|-");
-//			pw.println(index++ + "|+");
-//			pw.println(index++ + "|=");
-//			pw.println(index++ + "|.");
-//			pw.println(index++ + "|,");
-//			pw.println(index++ + "|<");
-//			pw.println(index++ + "|>");
-//			
-//			pw.println(index++ + "|!");
-//			pw.println(index++ + "|@");
-//			pw.println(index++ + "|#");
-//			pw.println(index++ + "|%");
-//			pw.println(index++ + "|^");
-//			pw.println(index++ + "|&");
-//			pw.println(index++ + "|$");
+			pw.println("!");
+//			pw.println("@");
+//			pw.println("#");
+//			pw.println("%");
+//			pw.println("^");
+//			pw.println("&");
+			pw.println("$");
+
+			pw.println("(");
+			pw.println(")");
 
 		}
 		catch(IOException ex) {	LOG.error("Write Directory to File", ex);	}
 	}
-
-//	/**
-//	 * Adds to custom dictionary.
-//	 * 
-//	 * @param word to add to custom dictionary
-//	 */
-//	public static Integer addCustDirectory(String word) {
-//		
-//		int index = freqKeyWord.size();
-//
-//		freqKeyWord.put(index, word);
-//		freqWordKey.put(word, index);
-//		
-//		writeCustDirectory(index, word);
-//		
-////		System.out.println("Custom Dictionary: " + index + ", " + word);
-//		
-//		return index;
-//	}
-	
-//	public static void writeCustDirectory(int index, String word) {
-//		
-//		try {
-//			Files.write(Paths.get("src/main/resources/directory"),
-//				(index + "|" + word + "\n").getBytes(), StandardOpenOption.APPEND);
-//		}
-//		catch (IOException ex) {
-//			LOG.error("Write Custom Directory Word", ex);
-//		}
-//	}
 }

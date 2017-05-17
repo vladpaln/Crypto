@@ -59,25 +59,32 @@
 
 <body>
 	<div style="float: left; display: table;">
-	<h1 style="cursor: pointer;" onclick="window.location.reload(false);">Enigma 4K</h1>
+	<h1 style="cursor: pointer;">Enigma 4K</h1>
 	<form action="/enigma/index" method="POST" autocomplete="off">
 		<div>	<label>Rotor #</label>
-				<input class="right" type="text" name="rotorCount" value="${rotorCount}" size="3" /><span>(97 - 4K)</span>
+				<input class="right" type="text" name="rotorCount" value="${rotorCount}" size="3" onfocus="this.select();" /><span>(97 - 4K)</span>
 				<!-- <label style="padding-left: 100px;">Msg ID:</label><span>${msgID}</span> -->
 		</div>
 		<div>	<label>Plugboard #</label>
-				<input class="right" type="text" name="pbCount" value="${pbCount}" size="3" /><span>(97 - 4K)</span></div>
+				<input class="right" type="text" name="pbCount" value="${pbCount}" size="3" onfocus="this.select();" /><span>(97 - ${pbCountMax})</span></div>
 		<br />
 		<div>	<label class="${handleErr}">Recipient</label>
-				<input type="text" name="handle" value="${handle}" placeholder="Recipient Name, Email or Handle (case sensitive)" size="50" />
+				<input type="text" name="handle" value="${handle}" placeholder="Recipient Name, Email or Handle (case sensitive)" size="50" onfocus="this.select();" />
 		</div>
 		<div>	<label class="${passPhraseErr}">Crypt Phrase</label>
-				<input type="text" name="passPhrase" size="80" value="${passPhrase}" placeholder="Crypt Phrase or Password (case sensitive)"/>
+				<input type="text" name="passPhrase" size="80" value="${passPhrase}" placeholder="Crypt Phrase or Password (case sensitive)" onfocus="this.select();" />
 		</div>
 		<br />
 		<div><label style="width: 500px;" class="${textErr}">Text <span style="font-size: 8pt;">(allowed chars: A-Za-z, 0-9, standard punctuation)</span></label></div>
-		<div><textarea name="text" rows="15" cols="100" placeholder="Plain Text or Encrypted Text [Allowed Chars: A-Za-z, 0-9, Standard Punctuation]">${text}</textarea></div>
-		<div><button name="encrypt" type="submit" value="encrypt">Encrypt</button>&nbsp;&nbsp;<button name="decrypt" type="submit" value="decrypt">Decrypt</button></div>
+		<div><textarea name="text" rows="20" cols="100" placeholder="Plain Text or Encrypted Text [Allowed Chars: A-Za-z, 0-9, Standard Punctuation]" onfocus="this.select();">${text}</textarea></div>
+		<div>	<button name="encrypt" type="submit" value="encrypt">Encrypt</button>&nbsp;&nbsp;
+				<button name="decrypt" type="submit" value="decrypt">Decrypt</button>&nbsp;&nbsp;
+				<button type="submit" onclick="
+					document.getElementsByName('handle').value = '';
+					document.getElementsByName('passPhrase').value = '';
+					document.getElementsByName('text').value = '';
+				"><b>Clear</b></button>
+		</div>
 	</form>
 	</div>
 	

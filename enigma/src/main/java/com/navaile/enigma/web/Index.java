@@ -53,6 +53,9 @@ public class Index extends HttpServlet {
 		req.setAttribute("rotorCount", Enigma4K.COUNT_MIN);
 		req.setAttribute("pbCount", Enigma4K.COUNT_MIN);
 		
+		req.setAttribute("roCountMax", Enigma4K.RO_COUNT_LOCK);
+		req.setAttribute("pbCountMax", Enigma4K.PB_COUNT_LOCK);
+		
 		if(req.getParameter("encrypt") != null || req.getParameter("decrypt") != null) {
 
 			String rotorCountStr = req.getParameter("rotorCount");

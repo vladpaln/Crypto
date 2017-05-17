@@ -163,7 +163,7 @@ public class Test {
 //		System.out.println(result.getHex(SipHashCase.UPPER));         //  "2896BE26D3374EC"
 //		System.out.println(result.getHex(true, SipHashCase.UPPER));   // "02896BE26D3374EC"
 		
-//		String text = "1PWLI63M9YZW";
+		String text = "1PWLI63M9        YZW";
 //		System.out.println(text.substring(0, 9));
 //		System.out.println(text.substring(9, text.length()));
 
@@ -178,6 +178,8 @@ public class Test {
 //		
 //		for(char c: charArr)
 //			System.out.println("directory test: " + c + "|" + dic.getKeyCode(String.valueOf(c)));
+
+		System.out.println(text.replaceAll("\\s{2,}", " "));
 	}
 	
 }
