@@ -5,6 +5,7 @@ An advanced version of the enigma machine.
 - word encoding instead of letter encoding
 - up to 4,000 rotors
 - each rotor will have 46,655 values
+- same rotor can be used multiple times
 - up to 4,000 plugboards
 - each plugboard will have 46,655 values
 - no reflector, value can map to itself
