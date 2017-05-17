@@ -10,7 +10,7 @@ An advanced version of the enigma machine.
 - no reflector, value can map to itself
 - random step size for each rotor
 - random direction rotor rotation
-- same pass phrase & recipient handle can be used for all messages
+- same passphrase & recipient handle can be used for all messages
 - random seed generation, Enigma4K will never encrypt a message using the same rotor/plugboard settings
 
 ## Usage
@@ -22,13 +22,13 @@ An advanced version of the enigma machine.
 - enter pass phrase, this can be anything (both parties must have this information)
 - enter recipient email/handle, this can be anything recipient specific (both parties must have this information)
 - enter text
-- hit encrypt buttom
+- hit encrypt button
 
 ### Decrypt Usage
 - enter pass phrase (same as used to encrypt message)
-- enter reipient email/handle (same as used to encrypt message)
+- enter recipient email/handle (same as used to encrypt message)
 - enter encrypted text
-- hit decrypt buttom
+- hit decrypt button
 
 ## TODO
 - create unit tests
