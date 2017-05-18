@@ -55,7 +55,6 @@ plainText = enigma.decryptText(cryptText);
 
 ## Dependencies
 - Apache Commons
-- slf4j
 - siphash
 - log4j
 - junit
