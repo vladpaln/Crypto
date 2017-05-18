@@ -28,7 +28,7 @@ An advanced version of the enigma machine.
 - hit encrypt button
 
 ### Decrypt Usage
-- enter rotor/plugboard count
+- enter rotor/plugboard count (same as used to encrypt message)
 - enter pass phrase (same as used to encrypt message)
 - enter recipient email/handle (same as used to encrypt message)
 - enter encrypted text
