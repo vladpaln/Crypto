@@ -8,6 +8,7 @@ package com.navaile.enigma;
 import com.zackehh.siphash.SipHash;
 import com.zackehh.siphash.SipHashCase;
 import com.zackehh.siphash.SipHashResult;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -15,9 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TimeZone;
 import org.apache.commons.lang3.text.StrBuilder;
-import org.apache.log4j.BasicConfigurator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.*;
 
 /**
  *
@@ -25,7 +24,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Test {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(Test.class);
+	private static final Logger LOG = Logger.getLogger(Test.class);
 
 	/**
 	 * @param args the command line arguments
@@ -33,6 +32,7 @@ public class Test {
 	public static void main(String[] args) {
 		
 		BasicConfigurator.configure();
+		Logger.getRootLogger().setLevel(Level.ERROR);
 		
 //		ArrayList<String> rotorList = new ArrayList<>();
 //		
@@ -163,23 +163,34 @@ public class Test {
 //		System.out.println(result.getHex(SipHashCase.UPPER));         //  "2896BE26D3374EC"
 //		System.out.println(result.getHex(true, SipHashCase.UPPER));   // "02896BE26D3374EC"
 		
-		String text = "1PWLI63M9        YZW";
+		String text = "1PWLI6 3M9        YZW";
 //		System.out.println(text.substring(0, 9));
 //		System.out.println(text.substring(9, text.length()));
 
 //		String path = "src/main/resources/directory";
 //		Directory dic = Directory.getInstance(path);
-//		
-//		char[] charArr = new char[] {
-//			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '`',
-//			'~', '?', ':', '"', '\'', '_', '*', '-', '+', '=',
-//			'.', ',', '<', '>', '!', '@', '#', '%', '^', '&', '$'
-//		};
-//		
-//		for(char c: charArr)
-//			System.out.println("directory test: " + c + "|" + dic.getKeyCode(String.valueOf(c)));
 
-		System.out.println(text.replaceAll("\\s{2,}", " "));
+//		try {
+//			
+//			System.out.println(Test.class.getResource("text.txt"));
+//			System.out.println(Test.class.getResource("/directory"));
+//			System.out.println(Test.class.getClass().getResource("10k_words.txt"));
+//			
+//			Test test = new Test();
+//			System.out.println(test.getClass().getResource("web/zztt"));
+//			System.out.println(test.getClass().getResource("src/main/resources/directory"));
+//		}
+//		catch(Exception e) {	System.out.println(e);			}
+
+//		System.out.println(text.replaceAll("\\s{2,}", " "));
+
+
+		Directory dirOne = Directory.getInstance();
+			System.out.println("test: " + dirOne.getKeyCode("test"));
+		
+		Directory.randomizeDirectory(123456789);
+
+			System.out.println("test: " + dirOne.getKeyCode("test"));
 	}
 	
 }

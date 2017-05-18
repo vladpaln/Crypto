@@ -5,30 +5,44 @@
  */
 package com.navaile.enigma;
 
-
 import java.io.*;
-import java.nio.file.*;
-import java.text.BreakIterator;
 import java.util.*;
 import org.apache.commons.lang3.text.StrBuilder;
-import org.apache.log4j.BasicConfigurator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.*;
 
 /**
+ * Loads a word directory of the 45K most frequent words in the english language.
+ * The ability to build a brand new directory and to randomize it to increase
+ * security are also handled by Directory.
+ * 
+ * To build a new directory simply run this class. To randomize run
+ * Directory.randomizeDirectory(seed). Both parties must use the same seed to
+ * insure same random directories for secure communications.
  *
- * @author vladpaln
+ * @author navaile
  */
 public class Directory {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(Directory.class);
+	private static final Logger LOG = Logger.getLogger(Directory.class);
 	
-	private static String path;
+	/**
+	 * resources class loading
+	 * 
+	 * access from static class:	/directory
+	 *		Directory.class.getClass().getResource("/directory")
+	 * 
+	 * access from instance:		directory
+	 *		getClass().getClassLoader().getResourceAsStream("directory")
+	 * 
+	 */
 	
 	private static Directory dir;
 	
+	/** Running this will build a new original directory file.	*/
 	public static void main(String[] args) {
 		BasicConfigurator.configure();
+		Logger.getRootLogger().setLevel(Level.ERROR);
+		
 		buildDirectory();
 	}
 	
@@ -37,27 +51,25 @@ public class Directory {
 	}
 	
 	/** Returns static instance of Directory DB.	*/
-	public static Directory getInstance(String path) {
-		
-		Directory.path = path;
+	public static Directory getInstance() {
 		
 		if(dir == null)		dir = new Directory();
 		return dir;
 	}
 	
 	/**
-	 * Preprocess text, replace punctuation with word equivalent.
+	 * Preprocess text, replace some punctuation with word equivalent.
 	 * 
-	 * @param msg
-	 * @return 
+	 * @param plainText
+	 * @return text with replaced punctuation
 	 */
-	private String preprocess(String msg) {
+	private String preprocess(String plainText) {
+		
+		LOG.info("Directory.preprocess()");
 
-		StrBuilder newMsg = new StrBuilder(msg);
+		StrBuilder newMsg = new StrBuilder(plainText);
 
-			newMsg
-			
-			.replaceAll("\\r\\n|\\r|\\n", " ")
+			newMsg.replaceAll("\\r\\n|\\r|\\n", " ")
 //			.replaceAll("/", " forward slash ")
 			.replaceAll("\\", " backward slash ")
 //			.replaceAll("", "  ")
@@ -124,17 +136,25 @@ public class Directory {
 	 */
 	public String[] parceWords(String text) {
 		
+		LOG.info("Directory.parceWords()");
+		
 		text = preprocess(text);
 		return text.split(" ");
 	}
 
 	/** Converts word to keyCode.	*/
 	public Integer getKeyCode(String word) {
+		
+		LOG.info("Directory.getKeyCode()");
+		
 		return freqWordKey.get(word);
 	}
 	
 	/** Converts keyCode to word.				*/
 	public String getWord(Integer keyCode) {
+		
+		LOG.info("Directory.getWord()");
+		
 		return freqKeyWord.get(keyCode);
 	}
 	
@@ -148,8 +168,6 @@ public class Directory {
 	 * http://norvig.com/ngrams/
 	 * http://www.insightin.com/esl/
 	 * https://github.com/first20hours/google-10000-english
-	 * 
-	 * 
 	 */
 	
 	// directory
@@ -159,9 +177,11 @@ public class Directory {
 	private void loadDictionary() {
 		
 		LOG.info("Directory.loadDictionary()");
+
+		InputStream is = getClass().getClassLoader().getResourceAsStream("directory");
 		
 		int index = 0;
-		try(BufferedReader br = new BufferedReader(new FileReader(path))) {
+		try(BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
 			
 			for(String word; (word = br.readLine()) != null; ) {
 
@@ -174,11 +194,62 @@ public class Directory {
 				}
 			}
 		}
-		catch(Exception ex) {	LOG.error("Error Loading Directory", ex);	}
+		catch(Exception e) {	LOG.error("Error loading directory", e);	}
+	}
+	
+	/**
+	 * This method will load the directory, randomize it and save the randomized
+	 * list to file. Randomizing the directory increases security however both
+	 * parties must use the same seed when randomizing the directory to ensure
+	 * that both parties have the same directory.
+	 * 
+	 */
+	public static void randomizeDirectory(long seed) {
+		
+		LOG.info("Directory.loadDictionary()");
+
+		ArrayList<String> wordList = new ArrayList<>();
+//		InputStream is = Directory.class.getClass().getClassLoader().getResourceAsStream("/directory");
+		String path = Directory.class.getClass().getResource("/directory").getPath();
+
+		try(BufferedReader br = new BufferedReader(new FileReader(path))) {
+
+			for(String word; (word = br.readLine()) != null; )
+				wordList.add(word);
+		}
+		catch(Exception e) {	LOG.error("Error reading directory.", e);	}
+		
+		Random rnd = new Random(seed);
+		String[] wordArr = wordList.toArray(new String[wordList.size()]);
+
+		// Fisher–Yates shuffle
+		for(int i = wordArr.length - 1; i > 0; i--) {
+
+			int ind = rnd.nextInt(i + 1);
+			// Simple swap
+			String a = wordArr[ind];
+			wordArr[ind] = wordArr[i];
+			wordArr[i] = a;
+		}
+		
+		// directory
+		try {
+			path = Directory.class.getClass().getResource("/directory").getPath();
+
+			try(PrintWriter pw = new PrintWriter(path, "UTF-8")) {
+				for(String word: wordArr)		pw.println(word.trim());
+			}
+			catch(IOException ex) {	LOG.error("Write Directory to File", ex);	}
+		}
+		catch(Exception e) {	LOG.error("Unable to access file.", e);	}
+		
+		getInstance().loadDictionary();
 	}
 	
 	/** Builds directory from word frequency lists.			*/
 	private static void buildDirectory() {
+		
+		LOG.info("Directory.buildDirectory()");
 		
 		Set<String> wordSet = new HashSet<>();
 		
@@ -200,51 +271,56 @@ public class Directory {
 		}
 		
 		// directory
-		try(PrintWriter pw = new PrintWriter("src/main/resources/directory", "UTF-8")) {
-			
-			for(String word: wordSet)		pw.println(word.trim());
-			pw.println("--- CUST ---");
-			
-			// word partitioning
-			pw.println("[");
-			pw.println("]");
-			
-			// number partitioning
-			for(int i = 0; i <= 9; i++)		pw.println(i);
-			
-//			// symbols
-			pw.println("`");
-			pw.println("~");
-			pw.println("?");
-			pw.println(":");
-			pw.println(";");
-			pw.println("\"");
-			pw.println("'");
-			pw.println("_");
-			pw.println("|");
+		try {
 
-			pw.println("/");
-			pw.println("*");
-			pw.println("-");
-			pw.println("+");
-			pw.println("=");
-			pw.println(".");
-			pw.println(",");
-			pw.println("<");
-			pw.println(">");
-//			
-			pw.println("!");
-//			pw.println("@");
-//			pw.println("#");
-//			pw.println("%");
-//			pw.println("^");
-//			pw.println("&");
-			pw.println("$");
+			String path = Directory.class.getClass().getResource("/directory").getPath();
+			
+			try(PrintWriter pw = new PrintWriter(path, "UTF-8")) {
 
-			pw.println("(");
-			pw.println(")");
+				for(String word: wordSet)		pw.println(word.trim());
+				pw.println("--- CUST ---");
 
+				// word partitioning
+				pw.println("[");
+				pw.println("]");
+
+				// number partitioning
+				for(int i = 0; i <= 9; i++)		pw.println(i);
+
+	//			// symbols
+				pw.println("`");
+				pw.println("~");
+				pw.println("?");
+				pw.println(":");
+				pw.println(";");
+				pw.println("\"");
+				pw.println("'");
+				pw.println("_");
+				pw.println("|");
+
+				pw.println("/");
+				pw.println("*");
+				pw.println("-");
+				pw.println("+");
+				pw.println("=");
+				pw.println(".");
+				pw.println(",");
+				pw.println("<");
+				pw.println(">");
+	//			
+				pw.println("!");
+	//			pw.println("@");
+	//			pw.println("#");
+	//			pw.println("%");
+	//			pw.println("^");
+	//			pw.println("&");
+				pw.println("$");
+
+				pw.println("(");
+				pw.println(")");
+			}
+			catch(IOException ex) {	LOG.error("Write Directory to File", ex);	}
 		}
-		catch(IOException ex) {	LOG.error("Write Directory to File", ex);	}
+		catch(Exception e) {	LOG.error("Unable to access file.", e);	}
 	}
 }

@@ -13,10 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.*;
 
 /**
  *
@@ -25,7 +22,7 @@ import org.slf4j.LoggerFactory;
 @WebServlet(name = "index", urlPatterns = {"/index", ""})
 public class Index extends HttpServlet {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(Enigma4K.class);
+	private static final Logger LOG = Logger.getLogger(Enigma4K.class);
 
 	/**
 	 * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,15 +37,7 @@ public class Index extends HttpServlet {
 			throws ServletException, IOException {
 		
 		BasicConfigurator.configure();
-		org.apache.log4j.Logger logger4j = org.apache.log4j.Logger.getRootLogger();
-			logger4j.setLevel(Level.ERROR);
-		
-//		HttpServletRequest httpRequest = (HttpServletRequest) request;
-
-		ServletContext context = getServletContext();
-			String path = context.getRealPath("/WEB-INF/directory");
-			
-		System.out.println("Index.processRequest(): " + path);
+		Logger.getRootLogger().setLevel(Level.ERROR);
 
 		req.setAttribute("rotorCount", Enigma4K.COUNT_MIN);
 		req.setAttribute("pbCount", Enigma4K.COUNT_MIN);
@@ -75,6 +64,7 @@ public class Index extends HttpServlet {
 				
 				try {	rotorCount = Integer.parseInt(rotorCountStr);		}
 				catch(NumberFormatException ex) {
+					LOG.error("Integer parse error: " + rotorCountStr, ex);
 					req.setAttribute("rotorCountErr", "err");
 					error = true;
 				}
@@ -87,6 +77,7 @@ public class Index extends HttpServlet {
 				
 				try {	pbCount = Integer.parseInt(pbCountStr);				}
 				catch(NumberFormatException ex) {
+					LOG.error("Integer parse error: " + pbCountStr, ex);
 					req.setAttribute("pbCountErr", "err");
 					error = true;
 				}
@@ -118,8 +109,8 @@ public class Index extends HttpServlet {
 					try {
 
 						String msgID = Enigma4K.genMsgID();
-						LOG.error("Index.msgID: " + msgID);
-						Enigma4K enigma = new Enigma4K(path, passPhrase, handle, msgID, rotorCount, pbCount);
+						LOG.debug("Index.msgID: " + msgID);
+						Enigma4K enigma = new Enigma4K(passPhrase, handle, msgID, rotorCount, pbCount);
 							req.setAttribute("msgID", msgID);
 
 						String encryptText = enigma.encryptText(text);
@@ -135,10 +126,10 @@ public class Index extends HttpServlet {
 					try {
 
 						String msgID = text.substring(0, 9);
-						LOG.error("Index.msgID: " + msgID);
+						LOG.debug("Index.msgID: " + msgID);
 						String cryptText = text.substring(9, text.length());
 						
-						Enigma4K enigma = new Enigma4K(path, passPhrase, handle, msgID, rotorCount, pbCount);
+						Enigma4K enigma = new Enigma4K(passPhrase, handle, msgID, rotorCount, pbCount);
 						
 						String decryString = enigma.decryptText(cryptText);
 						req.setAttribute("text", decryString);
