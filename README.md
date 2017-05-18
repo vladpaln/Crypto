@@ -13,6 +13,7 @@ An advanced version of the enigma machine.
 - random direction rotor rotation
 - same passphrase & recipient handle can be used for all messages
 - random seed generation, Enigma4K will never encrypt a message using the same rotor/plugboard settings
+- ability to randomize directory for increased security
 
 ## Usage
 - run code
@@ -50,8 +51,8 @@ plainText = enigma.decryptText(cryptText);
 - optimize code
 - create unit tests
 - upgrade to 8K rotors by using shorts
-- add randomize directory feature
 - add directory edit page
+- extensive test of hash functions
 
 ## Dependencies
 - Apache Commons
