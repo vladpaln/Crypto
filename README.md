@@ -1,6 +1,8 @@
 # Enigma4K
 An advanced version of the enigma machine.  
   
+![Alt text](/enigma4Kscreenshot.png?raw=true "Enigma4K")  
+  
 ## Features
 - word encoding instead of letter encoding
 - up to 4,000 rotors
