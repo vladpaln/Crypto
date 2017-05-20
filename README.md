@@ -18,6 +18,7 @@ An advanced version of the enigma machine.
 - ability to randomize word directory for increased security
 
 ## Usage
+- deploy war to app container (e.g.  tomcat)
 - run code
 - go to http://localhost:8084/enigma
 - accepted text characters: A-Z, a-z, 0-9, standard punctuation
@@ -55,6 +56,8 @@ plainText = enigma.decryptText(cryptText);
 - upgrade to 8K rotors by using shorts
 - add directory edit page
 - extensive test of hash functions
+- optimize word with punctuation encoding to two values (test, => SGS YGW) instead of char encoding
+- port to Spring Boot
 
 ## Dependencies
 - Apache Commons
