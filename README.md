@@ -45,7 +45,7 @@ Enigma4K enigma = new Enigma4K("pass phrase", "handle", msgID, roCount, pbCount)
 
 String 	plainText = "some secret message";
 String 	cryptText = enigma.encryptText(plainText);
-Enigma4K.resetKey();
+enigma.resetKey();
 plainText = enigma.decryptText(cryptText);
 ```
 
