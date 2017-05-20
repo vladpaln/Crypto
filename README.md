@@ -56,7 +56,7 @@ plainText = enigma.decryptText(cryptText);
 - upgrade to 8K rotors by using shorts
 - add directory edit page
 - extensive test of hash functions
-- optimize word with punctuation encoding to two values (test, => SGS YGW) instead of char encoding
+- optimize word w/ punctuation encoding to two values (test, => SGS YGW) instead of char encoding
 - port to Spring Boot
 
 ## Dependencies
