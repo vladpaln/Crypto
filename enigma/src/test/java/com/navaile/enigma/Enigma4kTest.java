@@ -31,9 +31,9 @@ public class Enigma4kTest {
 		
 		try {
 			
-			Enigma4K.resetKey();
+			enigma.resetKey();
 			String cryptText = enigma.encryptText(plainText);
-			Enigma4K.resetKey();
+			enigma.resetKey();
 			String decryptedText = enigma.decryptText(cryptText);
 			
 			System.out.println(cryptText);
@@ -47,9 +47,9 @@ public class Enigma4kTest {
 		
 		try {
 			
-			Enigma4K.resetKey();
+			enigma.resetKey();
 			String cryptText = enigma.encryptText(punct);
-			Enigma4K.resetKey();
+			enigma.resetKey();
 			String decryptedText = enigma.decryptText(cryptText);
 			
 			System.out.println(cryptText);

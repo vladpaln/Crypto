@@ -31,6 +31,9 @@ public class Enigma4K {
 	public static final int RO_COUNT_LOCK = 4_000;
 	public static final int PB_COUNT_LOCK = 500;
 	
+	/** Hash key, used to generate seeds. Feel free to change.		*/
+	public static String hashKey = "navaile_Enigma4K";
+	
 	/** Encryption/decryption multiplier.						*/
 	private static final int CRYPT_MULTI_MAX = 97;
 	private static int CRYPT_MULTI = 7;
@@ -163,7 +166,7 @@ public class Enigma4K {
 	}
 	
 	/** Resets rotor key.	*/
-	public static void resetKey() {
+	public void resetKey() {
 		Enigma4K.roIndex = Enigma4K.roKey.clone();
 		LOG.info("AdvEnigma.resetKey() key: " + Arrays.toString(Enigma4K.roKey));
 	}
@@ -465,7 +468,7 @@ public class Enigma4K {
 //
 //		return hash;
 
-		SipHash hasher = new SipHash("navaile_Enigma4K".getBytes());
+		SipHash hasher = new SipHash(hashKey.getBytes());
 		return hasher.hash(str.getBytes()).get();
 	}
 
@@ -552,7 +555,7 @@ public class Enigma4K {
 		String decTextLine = null, decRepeat = null;
 
 		try {
-			Enigma4K.resetKey();
+			enigma.resetKey();
 			decTextLine = enigma.decryptText(encTextLine);
 			decRepeat = enigma.decryptText(encRepeat);
 		}

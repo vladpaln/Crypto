@@ -187,9 +187,7 @@ public class Test {
 
 		Directory dirOne = Directory.getInstance();
 			System.out.println("test: " + dirOne.getKeyCode("test"));
-		
 		Directory.randomizeDirectory(123456789);
-
 			System.out.println("test: " + dirOne.getKeyCode("test"));
 	}
 	
