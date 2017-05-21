@@ -8,15 +8,16 @@ package com.navaile.enigma;
 import org.junit.*;
 
 /**
+ * Enigma4K unit test.
  *
- * @author vladpaln
+ * @author navaile
  */
 public class Enigma4kTest {
 	
 	private Enigma4K enigma;
 	
-	private static String plainText = "this is a test of the emergency broadcast system.";
-	private static String punct = "supercalifragilisticexpialidocious zzzz didn't ` ~ ? : ; \" ' _ | / * - + = . , < > ! $ ( ) %";
+	private static final String plainText = "this is a test of the emergency broadcast system.";
+	private static String punct = "supercalifragilisticexpialidocious zzzz didn't ` ~ ? : ; \" ' _ | / * - + = . , < > ! $ ( ) [ ] { } @ # % ^ &";
 	
 	@Before
 	public void iniEnigma4KTest() {
@@ -55,7 +56,7 @@ public class Enigma4kTest {
 			System.out.println(cryptText);
 			System.out.println(decryptedText);
 			
-			punct = "SUPERCALIFRAGILISTICEXPIALIDOCIOUS ZZZZ DIDN'T ` ~ ? : ; \" ' _ | / * - + = . , < > ! $ ( ) PERCENT";
+			punct =			"SUPERCALIFRAGILISTICEXPIALIDOCIOUS ZZZZ DIDN'T ` ~ ? : ; \" ' _ | / * - + =., < > ! $ ( ) [ ] { } @ # % ^ &";
 			Assert.assertTrue(punct.equalsIgnoreCase(decryptedText));
 		}
 		catch(Exception e) {

@@ -163,7 +163,7 @@ public class Test {
 //		System.out.println(result.getHex(SipHashCase.UPPER));         //  "2896BE26D3374EC"
 //		System.out.println(result.getHex(true, SipHashCase.UPPER));   // "02896BE26D3374EC"
 		
-		String text = "1PWLI6 3M9        YZW";
+//		String text = "1PWLI6 3M9        YZW";
 //		System.out.println(text.substring(0, 9));
 //		System.out.println(text.substring(9, text.length()));
 
@@ -185,10 +185,29 @@ public class Test {
 //		System.out.println(text.replaceAll("\\s{2,}", " "));
 
 
-		Directory dirOne = Directory.getInstance();
-			System.out.println("test: " + dirOne.getKeyCode("test"));
-		Directory.randomizeDirectory(123456789);
-			System.out.println("test: " + dirOne.getKeyCode("test"));
+//		Directory dirOne = Directory.getInstance();
+//			System.out.println("test: " + dirOne.getKeyCode("test"));
+//		Directory.randomizeDirectory(123456789);
+//			System.out.println("test: " + dirOne.getKeyCode("test"));
+
+//		String text = "The generated seed is used to spawn random rotors , plugboards , rotor step direction , and rotor step size .";
+//		System.out.println(text.replaceAll(" ,", ",").replaceAll(" \\.", "."));
+
+		
+//		// initializing unsorted int array
+//		String[] strArr = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"};
+//		Arrays.sort(strArr);		// sorting array
+//
+//		System.out.println(Arrays.toString(strArr));
+//
+//		// entering the value to be searched
+//		String searchVal = "four";
+//		int retVal = Arrays.binarySearch(strArr, searchVal);
+//		System.out.println("The index of element " + searchVal + " is : " + retVal);
+		
+		
+		
+		System.out.println("The".equalsIgnoreCase("the"));
 	}
 	
 }

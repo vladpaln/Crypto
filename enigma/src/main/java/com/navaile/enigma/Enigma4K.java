@@ -201,7 +201,7 @@ public class Enigma4K {
 				
 				LOG.debug("Enigma4K.encryptText letter arr: " + Arrays.toString(letters));
 				
-				wordCodeList.add(directory.getKeyCode("["));
+				wordCodeList.add(directory.getKeyCode("<%"));
 				for(char l: letters) {
 					
 					Integer keyCode = directory.getKeyCode(String.valueOf(l));
@@ -210,7 +210,7 @@ public class Enigma4K {
 					if(keyCode == null)
 						System.out.println("null keyCode for char: " + Character.getNumericValue(l));
 				}
-				wordCodeList.add(directory.getKeyCode("]"));
+				wordCodeList.add(directory.getKeyCode("%>"));
 			}
 			else {		wordCodeList.add(wordCode);						}
 		}
@@ -350,20 +350,27 @@ public class Enigma4K {
 					log.append("rD:").append(pbWordCode).append("\t");
 
 			String word = directory.getWord(pbWordCode);
+				word = word.replace("\\s,", ",");
+				word = word.replace("\\s.", ".");
 				log.append("direcWord: ").append(word);
 
-			if(word.equals("["))	wSpace = false;
-			if(word.equals("]"))	wSpace = true;
+			if(word.equals("<%"))	wSpace = false;
+			if(word.equals("%>"))	wSpace = true;
 
-			text.append(word.replace("[", "").replace("]", ""));
+			text.append(word.replace("<%", "").replace("%>", ""));
 			if(wSpace)	text.append(" ");
 
 			LOG.info(log.toString());
 		}
-		
+
 		LOG.info("Decrypt encrypted text.");
 		
-		return text.toString().trim().toUpperCase().replaceAll("\\s{2,}", " ");
+		return text.toString()
+			.trim()
+			.toUpperCase()
+			.replaceAll("\\s{2,}", " ")			// replace multiple spaces
+			.replaceAll(" ,", ",")				// remove spaces before commas
+			.replaceAll(" \\.", ".");			// remove spaces before period
 	}
 	
 	/**
@@ -488,22 +495,13 @@ public class Enigma4K {
 		Random rnd = new Random(seed);
 
 		if(seqRotor == null) {
-			seqRotor = new int[Enigma4K.DIR_SIZE];		// 46655, ZZZ
+			seqRotor = new int[Enigma4K.DIR_SIZE];			// 46655, ZZZ
 			for(int i = 0; i < seqRotor.length; i++)		seqRotor[i] = i;
 		}
 		
 		int[] arr = seqRotor.clone();
 		
-		// Fisher–Yates shuffle
-		// [0, 1, 2, 3, 4]
-		for(int i = arr.length - 1; i > 0; i--) {
-			
-			int index = rnd.nextInt(i + 1);
-			// Simple swap
-			int a = arr[index];
-			arr[index] = arr[i];
-			arr[i] = a;
-		}
+		Util.shuffle(rnd, arr);
 
 		return arr;
 	}

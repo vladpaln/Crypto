@@ -13,11 +13,11 @@ import org.apache.log4j.*;
 /**
  * Loads a word directory of the 45K most frequent words in the english language.
  * The ability to build a brand new directory and to randomize it to increase
- * security are also handled by Directory.
+ * security are also handled by the Directory.
  * 
  * To build a new directory simply run this class. To randomize run
- * Directory.randomizeDirectory(seed). Both parties must use the same seed to
- * insure same random directories for secure communications.
+ * getInstance().randomizeDirectory(seed). Both parties must use the same
+ * seed to insure same random directories for secure communications.
  *
  * @author navaile
  */
@@ -36,7 +36,22 @@ public class Directory {
 	 * 
 	 */
 	
+	/**
+	 * Notes
+	 * A avg native english speaker has a vocabulary of ~ 35K
+	 * 
+	 * keyCode 000 - ZZZ will provide a directory of 46655 words
+	 * 
+	 * english word frequency sources
+	 * http://norvig.com/ngrams/
+	 * http://www.insightin.com/esl/
+	 * https://github.com/first20hours/google-10000-english
+	 */
+	
 	private static Directory dir;
+	
+	private boolean ordered = true;
+	private String[] wordArr;
 	
 	/** Running this will build a new original directory file.	*/
 	public static void main(String[] args) {
@@ -76,6 +91,9 @@ public class Directory {
 			.replaceAll("\\n", " ")
 			.replaceAll("\\r", " ")
 			.replaceAll(System.getProperty("line.separator"), " ")
+					
+			.replaceAll(".", " .")
+			.replaceAll(",", " ,")
 
 //			.replaceAll("/", " division ")
 //			.replaceAll("*", " asterisk ")
@@ -98,17 +116,17 @@ public class Directory {
 //			.replaceAll("_", " underscore ")
 			
 //			.replaceAll("!", " exclamation ")
-			.replaceAll("@", " at ")
-			.replaceAll("#", " hashtag ")
-			.replaceAll("%", " percent ")
-			.replaceAll("^", " caret ")
-			.replaceAll("&", " ampersand ")
+//			.replaceAll("@", " at ")
+//			.replaceAll("#", " hashtag ")
+//			.replaceAll("%", " percent ")
+//			.replaceAll("^", " caret ")
+//			.replaceAll("&", " ampersand ")
 			.replaceAll("°", " degree ")
 			
-			.replaceAll("{", " open curly brace ")
-			.replaceAll("}", " close curly brace ")
-			.replaceAll("[", " open square bracket ")
-			.replaceAll("]", " close square bracket ")
+//			.replaceAll("{", " open curly brace ")
+//			.replaceAll("}", " close curly brace ")
+//			.replaceAll("[", " open square bracket ")
+//			.replaceAll("]", " close square bracket ")
 //			.replaceAll("(", " open parenthese ")
 //			.replaceAll(")", " close parenthese ")
 
@@ -137,113 +155,69 @@ public class Directory {
 	public String[] parceWords(String text) {
 		
 		LOG.info("Directory.parceWords()");
-		
-		text = preprocess(text);
-		return text.split(" ");
+		return preprocess(text).split(" ");
 	}
 
-	/** Converts word to keyCode.	*/
+	/** Converts word to keyCode.				*/
 	public Integer getKeyCode(String word) {
 		
 		LOG.info("Directory.getKeyCode()");
 		
-		return freqWordKey.get(word);
+		/**
+		 * If the directory is ordered, binarySearch is used, its very fast,
+		 * if the directory has been randomized then a slower loop is used.
+		 */
+		
+		if(ordered) {
+			int i =  Arrays.binarySearch(wordArr, word);
+			if(i >= 0)		return i;
+		}
+		else {
+			for(int i = 0; i < wordArr.length; i++)
+				if(wordArr[i].equals(word.toLowerCase()))		return i;
+		}
+		
+		return null;
 	}
 	
 	/** Converts keyCode to word.				*/
 	public String getWord(Integer keyCode) {
 		
 		LOG.info("Directory.getWord()");
-		
-		return freqKeyWord.get(keyCode);
+		if(keyCode >= 0 && keyCode < wordArr.length)	return wordArr[keyCode];
+		else											return null;
 	}
-	
-	/**
-	 * Notes
-	 * A native english speaker has a vocabulary of ~ 35K
-	 * 
-	 * keyCode 000 - ZZZ will provide a directory of 46655 words
-	 * 
-	 * english word frequency sources
-	 * http://norvig.com/ngrams/
-	 * http://www.insightin.com/esl/
-	 * https://github.com/first20hours/google-10000-english
-	 */
-	
-	// directory
-	private static final HashMap<Integer, String> freqKeyWord = new HashMap<Integer, String>();
-	private static final HashMap<String, Integer> freqWordKey = new HashMap<String, Integer>();
 	
 	private void loadDictionary() {
 		
 		LOG.info("Directory.loadDictionary()");
 
-		InputStream is = getClass().getClassLoader().getResourceAsStream("directory");
+		ArrayList<String> arrList = new ArrayList<>();
 		
-		int index = 0;
+		InputStream is = getClass().getClassLoader().getResourceAsStream("directory");
 		try(BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
 			
-			for(String word; (word = br.readLine()) != null; ) {
-
-				if(word.length() != 0) {
-
-					word = word.trim();
-					freqKeyWord.put(index, word);
-					freqWordKey.put(word, index);
-					index++;
-				}
-			}
+			for(String word; (word = br.readLine()) != null; )
+				if(word.length() != 0)		arrList.add(word.trim());
+			
+			wordArr = arrList.toArray(new String[arrList.size()]);
+			Arrays.sort(wordArr);
+			ordered = true;
 		}
 		catch(Exception e) {	LOG.error("Error loading directory", e);	}
 	}
 	
 	/**
-	 * This method will load the directory, randomize it and save the randomized
-	 * list to file. Randomizing the directory increases security however both
-	 * parties must use the same seed when randomizing the directory to ensure
-	 * that both parties have the same directory.
-	 * 
+	 * This method will randomize the directory based on the seed supplied.
+	 * Randomizing the directory increases security however both parties must
+	 * use the same seed when randomizing the directory to ensure that both
+	 * parties have the same directory.
 	 */
-	public static void randomizeDirectory(long seed) {
+	public void randomizeDirectory(long seed) {
 		
-		LOG.info("Directory.loadDictionary()");
-
-		ArrayList<String> wordList = new ArrayList<>();
-//		InputStream is = Directory.class.getClass().getClassLoader().getResourceAsStream("/directory");
-		String path = Directory.class.getClass().getResource("/directory").getPath();
-
-		try(BufferedReader br = new BufferedReader(new FileReader(path))) {
-
-			for(String word; (word = br.readLine()) != null; )
-				wordList.add(word);
-		}
-		catch(Exception e) {	LOG.error("Error reading directory.", e);	}
-		
-		Random rnd = new Random(seed);
-		String[] wordArr = wordList.toArray(new String[wordList.size()]);
-
-		// Fisher–Yates shuffle
-		for(int i = wordArr.length - 1; i > 0; i--) {
-
-			int ind = rnd.nextInt(i + 1);
-			// Simple swap
-			String a = wordArr[ind];
-			wordArr[ind] = wordArr[i];
-			wordArr[i] = a;
-		}
-		
-		// directory
-		try {
-			path = Directory.class.getClass().getResource("/directory").getPath();
-
-			try(PrintWriter pw = new PrintWriter(path, "UTF-8")) {
-				for(String word: wordArr)		pw.println(word.trim());
-			}
-			catch(IOException ex) {	LOG.error("Write Directory to File", ex);	}
-		}
-		catch(Exception e) {	LOG.error("Unable to access file.", e);	}
-		
-		getInstance().loadDictionary();
+		LOG.info("Directory.randomizeDirectory(" + seed + ")");
+		Util.shuffle(new Random(seed), wordArr);
+		ordered = false;
 	}
 	
 	/** Builds directory from word frequency lists.			*/
@@ -281,8 +255,8 @@ public class Directory {
 				pw.println("--- CUST ---");
 
 				// word partitioning
-				pw.println("[");
-				pw.println("]");
+				pw.println("<%");
+				pw.println("%>");
 
 				// number partitioning
 				for(int i = 0; i <= 9; i++)		pw.println(i);
@@ -307,17 +281,21 @@ public class Directory {
 				pw.println(",");
 				pw.println("<");
 				pw.println(">");
-	//			
+
 				pw.println("!");
-	//			pw.println("@");
-	//			pw.println("#");
-	//			pw.println("%");
-	//			pw.println("^");
-	//			pw.println("&");
+				pw.println("@");
+				pw.println("#");
+				pw.println("%");
+				pw.println("^");
+				pw.println("&");
 				pw.println("$");
 
 				pw.println("(");
 				pw.println(")");
+				pw.println("[");
+				pw.println("]");
+				pw.println("{");
+				pw.println("}");
 			}
 			catch(IOException ex) {	LOG.error("Write Directory to File", ex);	}
 		}

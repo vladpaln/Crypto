@@ -4,6 +4,7 @@
     Author     : vladpaln
 --%>
 
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -62,31 +63,33 @@
 	<h1 style="cursor: pointer;">Enigma 4K</h1>
 	<form action="/enigma/index" method="POST" autocomplete="off">
 		<div>	<label>Rotor #</label>
-				<input class="right" type="text" name="rotorCount" value="${rotorCount}" size="3" onfocus="this.select();" /><span>(97 - 4K)</span>
-				<!-- <label style="padding-left: 100px;">Msg ID:</label><span>${msgID}</span> -->
+				<input class="right" type="text" name="rotorCount" value="<c:out value='${rotorCount}' />" size="3" onfocus="this.select();" /><span>(97 - 4K)</span>
+				<!-- <label style="padding-left: 100px;">Msg ID:</label><span><c:out value='${msgID}' /></span> -->
 		</div>
 		<div>	<label>Plugboard #</label>
-				<input class="right" type="text" name="pbCount" value="${pbCount}" size="3" onfocus="this.select();" /><span>(97 - ${pbCountMax})</span></div>
+				<input class="right" type="text" name="pbCount" value="<c:out value='${pbCount}' />" size="3" onfocus="this.select();" /><span>(97 - <c:out value='${pbCountMax}' />)</span></div>
 		<br />
-		<div>	<label class="${handleErr}">Recipient</label>
-				<input type="text" name="handle" value="${handle}" placeholder="Recipient Name, Email or Handle (case sensitive)" size="50" onfocus="this.select();" />
+		<div>	<label class="<c:out value='${handleErr}' />">Recipient</label>
+				<input type="text" name="handle" value="<c:out value='${handle}' />" placeholder="Recipient Name, Email or Handle (case sensitive)" size="50" onfocus="this.select();" />
 		</div>
-		<div>	<label class="${passPhraseErr}">Crypt Phrase</label>
-				<input type="text" name="passPhrase" size="80" value="${passPhrase}" placeholder="Crypt Phrase or Password (case sensitive)" onfocus="this.select();" />
+		<div>	<label class="<c:out value='${passPhraseErr}' />">Crypt Phrase</label>
+				<input type="text" name="passPhrase" size="80" value="<c:out value='${passPhrase}' />" placeholder="Crypt Phrase or Password (case sensitive)" onfocus="this.select();" />
 		</div>
 		<br />
-		<div><label style="width: 500px;" class="${textErr}">Text <span style="font-size: 8pt;">(allowed chars: A-Za-z, 0-9, standard punctuation)</span></label></div>
-		<div><textarea name="text" rows="20" cols="100" placeholder="Plain Text or Encrypted Text [Allowed Chars: A-Za-z, 0-9, Standard Punctuation]" onfocus="this.select();">${text}</textarea></div>
+		<div><label style="width: 500px;" class="<c:out value='${textErr}' />">Text <span style="font-size: 8pt;">(allowed chars: A-Za-z, 0-9, standard punctuation)</span></label></div>
+		<div><textarea name="text" id="text" rows="20" cols="100" placeholder="Plain Text or Encrypted Text [Allowed Chars: A-Za-z, 0-9, Standard Punctuation]" onfocus="this.select();"><c:out value='${text}' /></textarea></div>
 		<div>	<button name="encrypt" type="submit" value="encrypt">Encrypt</button>&nbsp;&nbsp;
 				<button name="decrypt" type="submit" value="decrypt">Decrypt</button>&nbsp;&nbsp;
-				<button type="submit" onclick="
-					document.getElementsByName('handle').value = '';
-					document.getElementsByName('passPhrase').value = '';
-					document.getElementsByName('text').value = '';
-				"><b>Clear</b></button>
+				<button onclick="document.getElementById('text').value = '';"><b>Clear</b></button>
 		</div>
 	</form>
 	</div>
+		
+	<%--
+	<c:forEach var="i" begin="1" end="5">
+		<span>Item <c:out value="${i}" /></span>
+	</c:forEach>
+	--%>
 	
 	<div class="info" style="text-align: left; display: table; padding: 50px;">
 		<b>Parameters</b><br />
@@ -116,11 +119,11 @@
 		Enigma 4K encryption starts by first encoding plain text into its numeric<br />
 		equivalent, but instead of encoding letters, Enigma 4K encodes entire<br />
 		words. Next a seed is generated using the pass phrase and email/handle.<br />
-		Use of email/handle	is highly recommended to avoid cracking using common<br />
+		Use of email/handle is highly recommended to avoid cracking using common<br />
 		pass phrases. The generated seed is used to spawn random rotors, plugboards,<br />
 		rotor step direction, and rotor step size. The encoded value is passed<br />
 		through a plugboards => rotors sequence 97 times before passing it through<br />
-		a plugboard	for the last time before converting to base36 text.<br /><br />
+		a plugboard for the last time before converting to base36 text.<br /><br />
 
 		cryptText = plugboard( f<sub>97</sub>(rotor(plugboard(plainText))) )<br /><br />
 		
