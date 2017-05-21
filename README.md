@@ -53,10 +53,9 @@ plainText = enigma.decryptText(cryptText);
 ## TODO
 - optimize code
 - create unit tests
-- upgrade to 8K rotors by using shorts
-- add directory edit page
-- extensive test of hash functions
-- optimize word w/ punctuation encoding to two values ([test,] => [SGS YGW]) instead of individual char encoding
+- upgrade to 8K rotors by using shorts (its all about memory usage)
+- test hash function (siphash vs java.hashCode collisions)
+- randomize hash key
 - port to Spring Boot
 
 ## Dependencies
