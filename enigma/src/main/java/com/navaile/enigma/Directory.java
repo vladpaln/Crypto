@@ -81,19 +81,24 @@ public class Directory {
 	private String preprocess(String plainText) {
 		
 		LOG.info("Directory.preprocess()");
+		
+		String pattern = "[^\\s\\w\\p{Punct}]";		// allowed chars
 
 		StrBuilder newMsg = new StrBuilder(plainText);
 
 			newMsg.replaceAll("\\r\\n|\\r|\\n", " ")
-//			.replaceAll("/", " forward slash ")
-			.replaceAll("\\", " backward slash ")
-//			.replaceAll("", "  ")
-			.replaceAll("\\n", " ")
-			.replaceAll("\\r", " ")
 			.replaceAll(System.getProperty("line.separator"), " ")
+			.replaceAll("\\s", " ")
+//			.replaceAll("/", " forward slash ")
+//			.replaceAll("\\", " backward slash ")
+//			.replaceAll("", "  ")
+//			.replaceAll("\\n", " ")
+//			.replaceAll("\\r", " ")
 					
 			.replaceAll(".", " .")
 			.replaceAll(",", " ,")
+			.replaceAll(":", " :")
+			.replaceAll(";", " ;")
 
 //			.replaceAll("/", " division ")
 //			.replaceAll("*", " asterisk ")
@@ -141,6 +146,9 @@ public class Directory {
 			
 			.replaceAll("\\s{2,}", " ")
 			// .replaceAll("", "")
+					
+			// removes nonstandard characters
+			.replaceAll(pattern, "")
 			.trim();
 		
 		return newMsg.toString();
@@ -195,7 +203,7 @@ public class Directory {
 		ArrayList<String> arrList = new ArrayList<>();
 		
 		InputStream is = getClass().getClassLoader().getResourceAsStream("directory");
-		try(BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+		try( BufferedReader br = new BufferedReader(new InputStreamReader(is)) ) {
 			
 			for(String word; (word = br.readLine()) != null; )
 				if(word.length() != 0)		arrList.add(word.trim());
@@ -271,6 +279,7 @@ public class Directory {
 				pw.println("'");
 				pw.println("_");
 				pw.println("|");
+				pw.println("\\");
 
 				pw.println("/");
 				pw.println("*");

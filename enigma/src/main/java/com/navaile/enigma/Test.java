@@ -205,9 +205,7 @@ public class Test {
 //		int retVal = Arrays.binarySearch(strArr, searchVal);
 //		System.out.println("The index of element " + searchVal + " is : " + retVal);
 		
-		
-		
-		System.out.println("The".equalsIgnoreCase("the"));
+		System.out.println(System.getProperty("line.separator"));
 	}
 	
 }

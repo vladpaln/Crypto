@@ -208,7 +208,7 @@ public class Enigma4K {
 					wordCodeList.add(keyCode);
 
 					if(keyCode == null)
-						System.out.println("null keyCode for char: " + Character.getNumericValue(l));
+						System.out.println("null keyCode for char: " + l + "|" + Character.getNumericValue(l));
 				}
 				wordCodeList.add(directory.getKeyCode("%>"));
 			}
@@ -369,6 +369,8 @@ public class Enigma4K {
 			.trim()
 			.toUpperCase()
 			.replaceAll("\\s{2,}", " ")			// replace multiple spaces
+			.replaceAll(" :", ":")				// remove spaces before colon
+			.replaceAll(" ;", ";")				// remove spaces before semicolon
 			.replaceAll(" ,", ",")				// remove spaces before commas
 			.replaceAll(" \\.", ".");			// remove spaces before period
 	}

@@ -56,7 +56,7 @@ public class Enigma4kTest {
 			System.out.println(cryptText);
 			System.out.println(decryptedText);
 			
-			punct =			"SUPERCALIFRAGILISTICEXPIALIDOCIOUS ZZZZ DIDN'T ` ~ ? : ; \" ' _ | / * - + =., < > ! $ ( ) [ ] { } @ # % ^ &";
+			punct =	"SUPERCALIFRAGILISTICEXPIALIDOCIOUS ZZZZ DIDN'T ` ~ ?:; \" ' _ | / * - + =., < > ! $ ( ) [ ] { } @ # % ^ &";
 			Assert.assertTrue(punct.equalsIgnoreCase(decryptedText));
 		}
 		catch(Exception e) {

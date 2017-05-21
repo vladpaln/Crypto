@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.navaile.enigma.Enigma4kTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.747 sec
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.155 sec

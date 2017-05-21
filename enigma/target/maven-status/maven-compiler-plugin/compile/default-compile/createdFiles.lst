@@ -2,5 +2,4 @@ com\navaile\enigma\Util.class
 com\navaile\enigma\Test.class
 com\navaile\enigma\Directory.class
 com\navaile\enigma\Enigma4K.class
-com\navaile\enigma\web\DirectoryEdit.class
 com\navaile\enigma\web\Index.class
