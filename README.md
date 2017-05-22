@@ -49,6 +49,8 @@ String 	plainText = "some secret message";
 String cryptText = Enigma4K.encryptText(password, handle, roCount, pbCount, null, plainText);
 String plainText = Enigma4K.decryptText(password, handle, roCount, pbCount, null, cryptText);
 ```
+Rotor count is only limited by system memory.
+
 
 ## TODO
 - optimize code
