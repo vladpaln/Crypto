@@ -37,7 +37,7 @@ An advanced version of the enigma machine.
 - enter encrypted text
 - hit decrypt button
 
-## Embedded Usage
+### Code
 ```
 String password = "some password or pass phrase";
 String handle = "recipient email, handle or other identifier";
