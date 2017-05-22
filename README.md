@@ -39,15 +39,15 @@ An advanced version of the enigma machine.
 
 ## Embedded Usage
 ```
-String msgID = Enigma4K.genMsgID();
+String password = "some password or pass phrase";
+String handle = "recipient email, handle or other identifier";
 int roCount = Enigma4K.COUNT_MIN;		// rotor count 97 - 4,000
 int pbCount = Enigma4K.COUNT_MIN;		// plugboard count 97 - 500
-Enigma4K enigma = new Enigma4K("pass phrase", "handle", msgID, roCount, pbCount);
 
 String 	plainText = "some secret message";
-String 	cryptText = enigma.encryptText(plainText);
-enigma.resetKey();
-plainText = enigma.decryptText(cryptText);
+
+String cryptText = Enigma4K.encryptText(password, handle, roCount, pbCount, null, plainText);
+String plainText = Enigma4K.decryptText(password, handle, roCount, pbCount, null, cryptText);
 ```
 
 ## TODO
