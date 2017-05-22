@@ -1,7 +1,7 @@
 # Enigma4K
 An advanced version of the enigma machine.  
   
-![Alt text](/enigma4Kscreenshot.png?raw=true "Enigma4K")  
+![Alt text](/screenshot.png?raw=true "Enigma4K")  
   
 ## Features
 - word encoding instead of letter encoding
@@ -18,9 +18,10 @@ An advanced version of the enigma machine.
 - ability to randomize word directory for increased security
 
 ## Usage
-- deploy war to app container (e.g.  tomcat)
-- run code
-- go to http://localhost:8084/enigma
+- run enigma4K-1.0-SNAPSHOT-jar-with-dependencies.jar
+      or
+- java -Xmx4g -jar enigma4K-1.0-SNAPSHOT-jar-with-dependencies.jar
+- rotor count is limited by java heap size
 - accepted text characters: A-Z, a-z, 0-9, standard punctuation
 
 ### Encrypt Usage
@@ -37,28 +38,11 @@ An advanced version of the enigma machine.
 - enter encrypted text
 - hit decrypt button
 
-### Code
-```
-String password = "some password or pass phrase";
-String handle = "recipient email, handle or other identifier";
-int roCount = Enigma4K.COUNT_MIN;		// rotor count 97 - 4,000
-int pbCount = Enigma4K.COUNT_MIN;		// plugboard count 97 - 500
-
-String 	plainText = "some secret message";
-
-String cryptText = Enigma4K.encryptText(password, handle, roCount, pbCount, null, plainText);
-String plainText = Enigma4K.decryptText(password, handle, roCount, pbCount, null, cryptText);
-```
-Rotor count is only limited by java heap size.
-
-
 ## TODO
 - optimize code
 - create unit tests
-- upgrade to 8K rotors by using shorts (its all about memory usage)
 - test hash function (siphash vs java.hashCode collisions)
 - randomize hash key
-- port to Spring Boot
 
 ## Dependencies
 - Apache Commons
