@@ -57,8 +57,13 @@ public class EnigmaGUI extends javax.swing.JFrame {
         pbCountField = new javax.swing.JTextField();
         roCountField = new javax.swing.JTextField();
         textDescLabel = new javax.swing.JLabel();
-        dirSeedLabel = new javax.swing.JLabel();
         dirSeedField = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        aboutButton = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        dirSeedLabel = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Enigma 4K");
@@ -86,6 +91,7 @@ public class EnigmaGUI extends javax.swing.JFrame {
         textField.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
         textField.setLineWrap(true);
         textField.setRows(5);
+        textField.setToolTipText("Letters, numbers, and standard punctuation");
         textField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 textFieldFocusGained(evt);
@@ -118,6 +124,8 @@ public class EnigmaGUI extends javax.swing.JFrame {
         });
 
         passwordField.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
+        passwordField.setText("pass phrase/password");
+        passwordField.setToolTipText("Password, pass phrase know by both parties");
         passwordField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 passwordFieldFocusGained(evt);
@@ -125,6 +133,8 @@ public class EnigmaGUI extends javax.swing.JFrame {
         });
 
         handleField.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
+        handleField.setText("email/handle");
+        handleField.setToolTipText("Recipient email, handle, or other identifier");
         handleField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 handleFieldFocusGained(evt);
@@ -152,15 +162,49 @@ public class EnigmaGUI extends javax.swing.JFrame {
         textDescLabel.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
         textDescLabel.setText("(allowed chars: A-Za-z, 0-9, standard punctuation)");
 
-        dirSeedLabel.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
-        dirSeedLabel.setText("Directory Seed");
-
         dirSeedField.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
+        dirSeedField.setToolTipText("Directory randomization seed, default is blank");
         dirSeedField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 dirSeedFieldFocusGained(evt);
             }
         });
+
+        jLabel1.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        jLabel1.setText("(97 - 4K)");
+
+        jLabel2.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        jLabel2.setText("(97 - 500)");
+
+        aboutButton.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
+        aboutButton.setText("About");
+        aboutButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutButtonActionPerformed(evt);
+            }
+        });
+
+        dirSeedLabel.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
+        dirSeedLabel.setText("Directory Seed");
+
+        jLabel3.setText("(0 - 9,223,372,036,854,775,807)");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(dirSeedLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel3)
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(dirSeedLabel)
+                .addComponent(jLabel3))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -169,31 +213,14 @@ public class EnigmaGUI extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(title)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(encryptButton)
                         .addGap(18, 18, 18)
                         .addComponent(decryptButton)
                         .addGap(18, 18, 18)
-                        .addComponent(clearButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(textLabel)
-                        .addGap(18, 18, 18)
-                        .addComponent(textDescLabel))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(pbLabel)
-                            .addComponent(roLabel))
-                        .addGap(24, 24, 24)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(roCountField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(pbCountField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 283, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(dirSeedLabel)
-                                .addGap(251, 251, 251))
-                            .addComponent(dirSeedField)))
+                        .addComponent(clearButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(aboutButton))
                     .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -204,7 +231,33 @@ public class EnigmaGUI extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(handleField, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(passwordField))))
+                            .addComponent(passwordField)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(textLabel)
+                        .addGap(18, 18, 18)
+                        .addComponent(textDescLabel)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(pbLabel)
+                                    .addComponent(roLabel))
+                                .addGap(24, 24, 24)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(roCountField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel1))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(pbCountField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel2))))
+                            .addComponent(title))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 275, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(dirSeedField))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -213,15 +266,18 @@ public class EnigmaGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(title)
                 .addGap(12, 12, 12)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(roLabel)
-                    .addComponent(roCountField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(dirSeedLabel))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(roLabel)
+                        .addComponent(roCountField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(pbLabel)
                     .addComponent(pbCountField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(dirSeedField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(dirSeedField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(handleLabel)
@@ -240,7 +296,8 @@ public class EnigmaGUI extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(encryptButton)
                     .addComponent(decryptButton)
-                    .addComponent(clearButton))
+                    .addComponent(clearButton)
+                    .addComponent(aboutButton))
                 .addContainerGap())
         );
 
@@ -270,11 +327,20 @@ public class EnigmaGUI extends javax.swing.JFrame {
 			try {	dirSeed = Long.parseLong(dirSeedText);					}
 			catch(Exception e) {	System.err.println(e);					}
 		
+		System.out.println(
+			"passPhrase: " + passPhrase +
+			", handle: " + handle +
+			", roCount: " + roCount +
+			", pbCount: " + pbCount +
+			", dirSeed: " + dirSeed +
+			", text: " + textField.getText()
+		);
+		
 		try {
 			textField.setText(Enigma4K.encryptText(passPhrase, handle, roCount,
 					pbCount, dirSeed, textField.getText()));
 		}
-		catch(Exception e) {	System.err.println(e);						}	
+		catch(Exception e) {	System.err.println(e);						}
     }//GEN-LAST:event_encryptButtonActionPerformed
 
     private void decryptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decryptButtonActionPerformed
@@ -299,6 +365,15 @@ public class EnigmaGUI extends javax.swing.JFrame {
 		if(dirSeedText.length() != 0)	
 			try {	dirSeed = Long.parseLong(dirSeedText);					}
 			catch(Exception e) {	System.err.println(e);					}
+		
+		System.out.println(
+			"passPhrase: " + passPhrase +
+			", handle: " + handle +
+			", roCount: " + roCount +
+			", pbCount: " + pbCount +
+			", dirSeed: " + dirSeed +
+			", text: " + textField.getText()
+		);
 		
 		try {
 			textField.setText(Enigma4K.decryptText(passPhrase, handle, roCount,
@@ -341,6 +416,11 @@ public class EnigmaGUI extends javax.swing.JFrame {
 		focusGained(evt);
     }//GEN-LAST:event_textFieldFocusGained
 
+    private void aboutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutButtonActionPerformed
+		AboutDialog dialog = new AboutDialog(this, true);
+			dialog.setVisible(true);
+    }//GEN-LAST:event_aboutButtonActionPerformed
+
 	public void focusGained(java.awt.event.FocusEvent evt) {
 		
 		if(evt.getSource() instanceof JTextComponent)
@@ -382,6 +462,7 @@ public class EnigmaGUI extends javax.swing.JFrame {
 	
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton aboutButton;
     private javax.swing.JButton clearButton;
     private javax.swing.JButton decryptButton;
     private javax.swing.JTextField dirSeedField;
@@ -389,6 +470,10 @@ public class EnigmaGUI extends javax.swing.JFrame {
     private javax.swing.JButton encryptButton;
     private javax.swing.JTextField handleField;
     private javax.swing.JLabel handleLabel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel passLabel;
     private javax.swing.JTextField passwordField;

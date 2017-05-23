@@ -50,14 +50,16 @@ public class Enigma4K {
 	private static Random RND;
 	private static Directory directory;
 
-	/** Rotors used for encryption.		*/
+	/** Matrix used for encryption, if false matrix is inverted.		*/
+	private static boolean encrypt = true;
+	
 	private static int[][] roMatrix;
 	private static int[][] pbMatrix;
 	
-	/** Inverse for fast decryption.	*/
-	// doubles memory usage, speed increase 50x
-	private static int[][] invRoMatrix;
-	private static int[][] invPbMatrix;
+//	/** Inverse for fast decryption.	*/
+//	// doubles memory usage, speed increase 50x
+//	private static int[][] invRoMatrix;
+//	private static int[][] invPbMatrix;
 	
 	/** Rotor Key		*/			private static int[] roKey;
 	/** Index for each rotor */		private static int[] roIndex;
@@ -105,17 +107,15 @@ public class Enigma4K {
 		LOG.info("ini AdvEnigma: generate random rotors/plugboards");
 
 		Enigma4K.roMatrix = new int[roCount][];
-		Enigma4K.invRoMatrix = new int[roCount][];
 		for(int i = 0; i < roMatrix.length; i++) {
-			roMatrix[i] = genRotorPb(nextSeed());
-			Enigma4K.invRoMatrix[i] = invArr(Enigma4K.roMatrix[i]);
+			if(encrypt)		roMatrix[i] = genRotorPb(nextSeed());
+			else			roMatrix[i] = invArr(genRotorPb(nextSeed()));
 		}
 		
 		Enigma4K.pbMatrix = new int[pbCount][];
-		Enigma4K.invPbMatrix = new int[pbCount][];
 		for(int i = 0; i < pbMatrix.length; i++) {
-			pbMatrix[i] = genRotorPb(nextSeed());
-			Enigma4K.invPbMatrix[i] = invArr(Enigma4K.pbMatrix[i]);
+			if(encrypt)		pbMatrix[i] = genRotorPb(nextSeed());
+			else			pbMatrix[i] = invArr(genRotorPb(nextSeed()));
 		}
 		
 		memory();
@@ -198,6 +198,8 @@ public class Enigma4K {
 	public static String encryptText(String passPhrase, String handle,
 		int roCount, int pbCount, Long dirSeed, String plainText) throws Exception {
 		
+		encrypt = true;
+		
 		String msgID = Enigma4K.genMsgID();
 		Enigma4K enigma = new Enigma4K(passPhrase, handle, msgID, roCount, pbCount);
 			enigma.randomizeDirectory(dirSeed);
@@ -214,6 +216,8 @@ public class Enigma4K {
 	public String encryptText(String plainText) throws Exception {
 		
 		LOG.info("Enigma4K.encryptText(" + plainText + ")");
+		
+		encrypt = true;
 		
 		StringBuilder log = new StringBuilder();
 
@@ -359,6 +363,8 @@ public class Enigma4K {
 	public static String decryptText(String passPhrase, String handle,
 		int roCount, int pbCount, Long dirSeed, String cryptText) throws Exception {
 		
+		encrypt = false;
+		
 		String msgID = cryptText.substring(0, 9);
 		cryptText = cryptText.substring(9, cryptText.length());
 						
@@ -377,6 +383,8 @@ public class Enigma4K {
 	 * @return plaint text
 	 */
 	public String decryptText(String cryptText) throws Exception {
+		
+		encrypt = false;
 		
 		StringBuilder log;
 		
@@ -447,7 +455,7 @@ public class Enigma4K {
 		/* plugboard substitution
 		 * each word is substituted using a different plugboard		*/
 //		int[] plugboard = pbMatrix[wordIndex % pbMatrix.length];
-		int[] plugboard = invPbMatrix[wordIndex % invPbMatrix.length];
+		int[] plugboard = pbMatrix[wordIndex % pbMatrix.length];
 		
 //		int wordCodeIndex = -1;
 //		for(int i = 0; i < plugboard.length; i++)
@@ -473,9 +481,9 @@ public class Enigma4K {
 		LOG.info("START rotorDecrypt() eWordCode: " + wordCode);
 		
 		// rotor decrypt
-		for(int roID = invRoMatrix.length - 1; roID >= 0; roID--) {
+		for(int roID = roMatrix.length - 1; roID >= 0; roID--) {
 
-			int[] rotor = invRoMatrix[roID];
+			int[] rotor = roMatrix[roID];
 			int newWordCode = ((((rotor[wordCode] - roIndex[roID]) % DIR_SIZE) + DIR_SIZE) % DIR_SIZE);
 			LOG.info("roID: " + roID + ", eWordCode: " + wordCode +
 				", rotorIndex[" + roID + "]: " + roIndex[roID] +
