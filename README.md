@@ -37,12 +37,6 @@ An advanced version of the enigma machine.
 - enter encrypted text
 - press decrypt button
 
-## TODO
-- optimize code
-- create unit tests
-- test hash function (siphash vs java.hashCode collisions)
-- randomize hash key
-
 ## Dependencies
 - Apache Commons
 - siphash
