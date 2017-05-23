@@ -1,12 +1,18 @@
 
+TODO
 
-
-
-
-
-
-Severe
+Severe (fix ASAP)
 - fix rotor/plugboard multiplicity
 
+Test/Check/DO
+- optimize code
+- create unit tests
+- test hash function (siphash vs java.hashCode collision test)
+	- check directory
+	- check all longs (if possible)
+	- check random strings
+- siphash against other hash functions
 
 Future Features
+- randomize hash key
+
