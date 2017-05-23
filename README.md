@@ -1,7 +1,7 @@
 # Enigma4K
 An advanced version of the enigma machine.  
   
-![Alt text](/screenshot.png?raw=true "Enigma4K")  
+![Alt text](/screenshot_1.png?raw=true "Enigma4K")  
   
 ## Features
 - word encoding instead of letter encoding
