@@ -1,7 +1,7 @@
 # Crypto Mk II
-A cipher machine machine.  
+A cipher machine.  
   
-![Alt text](/screenshot_2.png?raw=true "Enigma4K")  
+![Alt text](/screenshot_2.png?raw=true "Crypto Mk II")  
   
 ## Features
 - word encoding instead of letter encoding
@@ -14,7 +14,7 @@ A cipher machine machine.
 - random step size for each rotor
 - random direction rotor rotation
 - same passphrase & recipient handle can be used for all messages
-- random seed generation, Enigma4K will never encrypt a message using the same settings
+- random seed generation, Crypto Mk II will never encrypt a message using the same settings
 - ability to randomize word directory for increased security
 
 ## Usage
