@@ -1,5 +1,5 @@
 # Crypto Mk II
-A cipher machine.  
+Cipher software.  
   
 ![Alt text](/screenshot_2.png?raw=true "Crypto Mk II")  
   
