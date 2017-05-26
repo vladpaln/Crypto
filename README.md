@@ -1,5 +1,5 @@
 # Crypto Mk II
-An advanced version of the enigma machine.  
+A cipher machine machine.  
   
 ![Alt text](/screenshot_2.png?raw=true "Enigma4K")  
   
