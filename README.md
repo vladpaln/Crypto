@@ -1,4 +1,4 @@
-# Enigma4K
+# Crypto Mk II
 An advanced version of the enigma machine.  
   
 ![Alt text](/screenshot_1.png?raw=true "Enigma4K")  
