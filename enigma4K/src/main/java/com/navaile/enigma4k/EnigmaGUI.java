@@ -5,31 +5,41 @@
  */
 package com.navaile.enigma4k;
 
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import java.net.URL;
+import javax.swing.*;
 import javax.swing.text.JTextComponent;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.log4j.*;
 
 /**
+ * Enigma4K GUI
  *
- * @author vladpaln
+ * @author navaile
  */
 public class EnigmaGUI extends javax.swing.JFrame {
+	
+	private static final Logger LOG = Logger.getLogger(EnigmaGUI.class);
 
-	/**
-	 * Creates new form EnigmaGUI
-	 */
-	public EnigmaGUI() {
+	/** Creates new form EnigmaGUI			*/
+	private EnigmaGUI() {
 		initComponents();
+
+		if(roCountField != null)
+			roCountField.setText(String.valueOf(Enigma4K.COUNT_MIN));
+		
+		if(pbCountField != null)
+			pbCountField.setText(String.valueOf(Enigma4K.COUNT_MIN));
 		
 		if(jScrollPane1 != null)
 			jScrollPane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		
-		if(textField != null)
+		if(textField != null) {
 			textField.setWrapStyleWord(false);
+			textField.setText("Your message goes here.");
+		}
+
+		URL iconURL = getClass().getResource("/icon.png");
+		ImageIcon icon = new ImageIcon(iconURL);
+		super.setIconImage(icon.getImage());
 	}
 
 	/**
@@ -66,11 +76,12 @@ public class EnigmaGUI extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Enigma 4K");
+        setTitle("Crypto Mk II");
+        setLocation(new java.awt.Point(300, 50));
         setPreferredSize(new java.awt.Dimension(1080, 720));
 
         title.setFont(new java.awt.Font("Verdana", 1, 36)); // NOI18N
-        title.setText("Enigma 4K");
+        title.setText("Crypto Mk II");
 
         roLabel.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
         roLabel.setText("Rotor #");
@@ -88,7 +99,7 @@ public class EnigmaGUI extends javax.swing.JFrame {
         textLabel.setText("Text");
 
         textField.setColumns(20);
-        textField.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
+        textField.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
         textField.setLineWrap(true);
         textField.setRows(5);
         textField.setToolTipText("Letters, numbers, and standard punctuation");
@@ -143,7 +154,6 @@ public class EnigmaGUI extends javax.swing.JFrame {
 
         pbCountField.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
         pbCountField.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
-        pbCountField.setText("97");
         pbCountField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 pbCountFieldFocusGained(evt);
@@ -152,7 +162,6 @@ public class EnigmaGUI extends javax.swing.JFrame {
 
         roCountField.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
         roCountField.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
-        roCountField.setText("97");
         roCountField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 roCountFieldFocusGained(evt);
@@ -254,7 +263,7 @@ public class EnigmaGUI extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jLabel2))))
                             .addComponent(title))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 275, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 349, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(dirSeedField))))
@@ -291,7 +300,7 @@ public class EnigmaGUI extends javax.swing.JFrame {
                     .addComponent(textLabel)
                     .addComponent(textDescLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(encryptButton)
@@ -316,31 +325,31 @@ public class EnigmaGUI extends javax.swing.JFrame {
 		Long dirSeed = null;
 
 		if(roCountText.length() != 0)
-			try {	roCount = Integer.parseInt(roCountText);				}
-			catch(Exception e) {	System.err.println(e);					}
+			try {	roCount = Integer.parseInt(roCountText);					}
+			catch(Exception e) {	LOG.fatal("Parse Rotor Count", e);			}
 		
 		if(pbCountText.length() != 0)
-			try {	pbCount = Integer.parseInt(pbCountText);				}
-			catch(Exception e) {	System.err.println(e);					}
+			try {	pbCount = Integer.parseInt(pbCountText);					}
+			catch(Exception e) {	LOG.fatal("Parse Plugboard Count", e);		}
 		
-		if(dirSeedText.length() != 0)	
-			try {	dirSeed = Long.parseLong(dirSeedText);					}
-			catch(Exception e) {	System.err.println(e);					}
+		if(dirSeedText.length() != 0 && dirSeedText.matches("[0-9]+"))	
+			try {	dirSeed = Long.parseLong(dirSeedText);						}
+			catch(Exception e) {	LOG.fatal("Parse Directory Seed", e);		}
 		
-		System.out.println(
-			"passPhrase: " + passPhrase +
-			", handle: " + handle +
-			", roCount: " + roCount +
-			", pbCount: " + pbCount +
-			", dirSeed: " + dirSeed +
-			", text: " + textField.getText()
-		);
+//		System.out.println(
+//			"passPhrase: " + passPhrase +
+//			", handle: " + handle +
+//			", roCount: " + roCount +
+//			", pbCount: " + pbCount +
+//			", dirSeed: " + dirSeed +
+//			", text: " + textField.getText()
+//		);
 		
 		try {
 			textField.setText(Enigma4K.encryptText(passPhrase, handle, roCount,
 					pbCount, dirSeed, textField.getText()));
 		}
-		catch(Exception e) {	System.err.println(e);						}
+		catch(Exception e) {	LOG.fatal("Enigma Encryption Exception", e);	}
     }//GEN-LAST:event_encryptButtonActionPerformed
 
     private void decryptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decryptButtonActionPerformed
@@ -355,37 +364,37 @@ public class EnigmaGUI extends javax.swing.JFrame {
 		Long dirSeed = null;
 
 		if(roCountText.length() != 0)
-			try {	roCount = Integer.parseInt(roCountText);				}
-			catch(Exception e) {	System.err.println(e);					}
+			try {	roCount = Integer.parseInt(roCountText);					}
+			catch(Exception e) {	LOG.fatal("Parse Rotor Count", e);			}
 		
 		if(pbCountText.length() != 0)
-			try {	pbCount = Integer.parseInt(pbCountText);				}
-			catch(Exception e) {	System.err.println(e);					}
+			try {	pbCount = Integer.parseInt(pbCountText);					}
+			catch(Exception e) {	LOG.fatal("Parse Plugboard Count", e);		}
 		
-		if(dirSeedText.length() != 0)	
-			try {	dirSeed = Long.parseLong(dirSeedText);					}
-			catch(Exception e) {	System.err.println(e);					}
-		
-		System.out.println(
-			"passPhrase: " + passPhrase +
-			", handle: " + handle +
-			", roCount: " + roCount +
-			", pbCount: " + pbCount +
-			", dirSeed: " + dirSeed +
-			", text: " + textField.getText()
-		);
+		if(dirSeedText.length() != 0 && dirSeedText.matches("[0-9]+"))	
+			try {	dirSeed = Long.parseLong(dirSeedText);						}
+			catch(Exception e) {	LOG.fatal("Parse Directory Seed", e);		}
+
+//		System.out.println(
+//			"passPhrase: " + passPhrase +
+//			", handle: " + handle +
+//			", roCount: " + roCount +
+//			", pbCount: " + pbCount +
+//			", dirSeed: " + dirSeed +
+//			", text: " + textField.getText()
+//		);
 		
 		try {
 			textField.setText(Enigma4K.decryptText(passPhrase, handle, roCount,
 					pbCount, dirSeed, textField.getText()));
 		}
-		catch(Exception e) {	System.err.println(e);						}
+		catch(Exception e) {	LOG.fatal("Enigma Decryption Exception", e);	}
     }//GEN-LAST:event_decryptButtonActionPerformed
 
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
 
-		roCountField.setText("97");
-		pbCountField.setText("97");
+		roCountField.setText(String.valueOf(Enigma4K.COUNT_MIN));
+		pbCountField.setText(String.valueOf(Enigma4K.COUNT_MIN));
 		handleField.setText("");
 		passwordField.setText("");
 		dirSeedField.setText("");
@@ -421,20 +430,15 @@ public class EnigmaGUI extends javax.swing.JFrame {
 			dialog.setVisible(true);
     }//GEN-LAST:event_aboutButtonActionPerformed
 
-	public void focusGained(java.awt.event.FocusEvent evt) {
+	private void focusGained(java.awt.event.FocusEvent evt) {
 		
 		if(evt.getSource() instanceof JTextComponent)
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					((JTextComponent) evt.getSource()).selectAll();
-				}
+			SwingUtilities.invokeLater(() -> {
+				((JTextComponent) evt.getSource()).selectAll();
 			});
     }
 	
-	/**
-	 * @param args the command line arguments
-	 */
+	/** @param args the command line arguments		*/
 	public static void main(String args[]) {
 		
 		BasicConfigurator.configure();
@@ -442,20 +446,14 @@ public class EnigmaGUI extends javax.swing.JFrame {
 
 		//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
 		try {
-			
-			/* Set look and feel */
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
-		catch(Exception ex) {
-			java.util.logging.Logger.getLogger(EnigmaGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		}
+		catch(Exception e) {	LOG.fatal("Unable to set Look and Feel", e);	}
 		//</editor-fold>
 
 		/* Create and display the form */
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				new EnigmaGUI().setVisible(true);
-			}
+		java.awt.EventQueue.invokeLater(() -> {
+			new EnigmaGUI().setVisible(true);
 		});
 	}
 	

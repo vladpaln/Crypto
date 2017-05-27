@@ -11,10 +11,27 @@ import java.util.*;
 import org.apache.log4j.*;
 
 /**
- * A next generation Enigma based on the original design.
+ * Enigma Mk II based on the original, attempts have been made to remove known
+ * weaknesses.
  * 
- * Software Design
- * The software was designed with a laymen in mind.
+ * Rotor/Plugboard Permutations
+ * perm		= factorial(rotorSize)
+ *			= 46,655!
+ *			= 1.478143766589091023060 x 10^197568
+ *			= 10^10^5.295716976537452
+ * 
+ * Known Limitations
+ * Rotor/plugboard variations are limited by 64bit seed.
+ * = (64bit permutations) / (rotor/pb permutations)
+ * = (9.22 x 10^18 * 2) / (1.478 x 10^197568)
+ * = only a tiny percent of all possible permutations is possible due to the
+ *		limitations of current computer architecture
+ * 
+ * random seed size of:
+ * 10^197568 = 2^x
+ * x = 197568*ln(10)/ln(2)
+ * x = 656306.68
+ * 2^656306.68 size long seed required for all ro/pb permutations
  *
  * @author navaile
  */
@@ -22,52 +39,33 @@ public class Enigma4K {
 	
 	private static final Logger LOG = Logger.getLogger(Enigma4K.class);
 
-	/** Directory size.					*/
-	public static final int DIR_SIZE = 46_655;				// ZZZ (base36)
+	/** Directory size.							*/
+	public static final int DIR_SIZE = 46_655;			// ZZZ (base36)
 
-	/** Number of rotors in the enigma machine.		*/
+	/** Number of rotors in the enigma machine.	*/
 	public static final int COUNT_MIN = 97;
 	public static final int COUNT_MAX = 46_655;			// ZZZ (base36)
-	public static final int RO_COUNT_LOCK = 4_000;
-	public static final int PB_COUNT_LOCK = 500;
+	private static final int RO_COUNT_MAX = 4_000;
+	private static final int PB_COUNT_MAX = 500;		// 500 (2 pages of text)
 	
 	/** Hash key, used to generate seeds. Feel free to change.		*/
-	public static String hashKey = "navaile_Enigma4K";
+	private static final String hashKey = "navaile_Enigma4K";
 	
-	/** Encryption/decryption multiplier.						*/
-	private static final int CRYPT_MULTI_MAX = 97;
-	private static int CRYPT_MULTI = 7;
-	
-	/**
-	 * Rotor/Plugboard Permutations
-	 * 
-	 * perm		= factorial(rotorSize)
-	 *			= 46,655!
-	 *			= 1.478143766589091023060 x 10^197568
-	 *			= 10^10^5.295716976537452
-	 */
-	
-	private static Random RND;
+	private final Random RND;
 	private static Directory directory;
 
 	/** Matrix used for encryption, if false matrix is inverted.		*/
 	private static boolean encrypt = true;
 	
-	private static int[][] roMatrix;
-	private static int[][] pbMatrix;
+	private final int[][] roMatrix;
+	private final int[][] pbMatrix;
 	
-//	/** Inverse for fast decryption.	*/
-//	// doubles memory usage, speed increase 50x
-//	private static int[][] invRoMatrix;
-//	private static int[][] invPbMatrix;
-	
-	/** Rotor Key		*/			private static int[] roKey;
-	/** Index for each rotor */		private static int[] roIndex;
-	/** Rotor Direction */			private static int[] roDirectionSpin;
-	/** Rotor Step Size */			private static int[] roStepSize;
+	/** Rotor Key		*/			private final int[] roKey;
+	/** Index for each rotor */		private int[] roIndex;
+	/** Rotor Direction */			private int[] roDirectionSpin;
 	
 	/**
-	 * Builds a new enigma machine.
+	 * Builds Crypto, configures settings.
 	 * 
 	 * @param passPhrase pass phrase, password
 	 * @param handle recipient name/email/handle
@@ -76,61 +74,59 @@ public class Enigma4K {
 	 * @param pbCount plugboard count, 97 - 500
 	 */
 	public Enigma4K(String passPhrase, String handle, String msgID, int roCount, int pbCount) {
-		
-		LOG.info("ini AdvEnigma(" + roCount + ", " + pbCount + ")");
-		
+
+		LOG.info("ini AdvEnigma()");
+
 		directory = Directory.getInstance();
 
 		passPhrase = passPhrase + "_" + handle + (msgID != null ? ("_" + msgID) : "");
 		LOG.info("passPhrase: " + passPhrase + ", handle: " + handle + ", msgID: " + msgID);
 
 		RND = new Random(hashCode(passPhrase));
-		CRYPT_MULTI = nextSeed(CRYPT_MULTI_MAX);
 
 		if(roCount < COUNT_MIN)			roCount = COUNT_MIN;
 		if(pbCount < COUNT_MIN)			pbCount = COUNT_MIN;
-		if(roCount > RO_COUNT_LOCK)		roCount = RO_COUNT_LOCK;	// 4,000
-		if(pbCount > PB_COUNT_LOCK)		pbCount = PB_COUNT_LOCK;	// 500 (2 pages)
+		if(roCount > RO_COUNT_MAX)		roCount = RO_COUNT_MAX;		// 4,000
+		if(pbCount > PB_COUNT_MAX)		pbCount = PB_COUNT_MAX;		// 500 (2 pages)
+		
+		// ro/pb random count
+		roCount = (int)( (roCount * .75) + (roCount * (RND.nextFloat() * .25)) );
+		pbCount = (int)( (pbCount * .75) + (pbCount * (RND.nextFloat() * .25)) );
+
+		LOG.info("ini AdvEnigma(" + roCount + ", " + pbCount + ")");
 		
 		LOG.info("ini AdvEnigma: genKey, copy to rotorIndex");
-		Enigma4K.roKey = genKey(roCount);
-		Enigma4K.roIndex = Enigma4K.roKey.clone();
+		roKey = genKey(roCount);
+		roIndex = roKey.clone();
 		
-		Enigma4K.roDirectionSpin = new int[Enigma4K.roKey.length];
-		for(int i = 0; i < Enigma4K.roDirectionSpin.length; i++)
-			Enigma4K.roDirectionSpin[i] = (nextBool() ? 1 : -1);
-		
-		Enigma4K.roStepSize = new int[Enigma4K.roKey.length];
-		for(int i = 0; i < Enigma4K.roStepSize.length; i++)
-			Enigma4K.roStepSize[i] = nextSeed(31 + 1);
+		roDirectionSpin();
 		
 		LOG.info("ini AdvEnigma: generate random rotors/plugboards");
 
-		Enigma4K.roMatrix = new int[roCount][];
+		roMatrix = new int[roCount][];
 		for(int i = 0; i < roMatrix.length; i++) {
-			if(encrypt)		roMatrix[i] = genRotorPb(nextSeed());
-			else			roMatrix[i] = invArr(genRotorPb(nextSeed()));
-		}
+			if(encrypt)		roMatrix[i] = genRotorPb(RND.nextLong());
+			else			roMatrix[i] = invArr(genRotorPb(RND.nextLong()));
+		}				
 		
-		Enigma4K.pbMatrix = new int[pbCount][];
+		pbMatrix = new int[pbCount][];
 		for(int i = 0; i < pbMatrix.length; i++) {
-			if(encrypt)		pbMatrix[i] = genRotorPb(nextSeed());
-			else			pbMatrix[i] = invArr(genRotorPb(nextSeed()));
+			if(encrypt)		pbMatrix[i] = genRotorPb(RND.nextLong());
+			else			pbMatrix[i] = invArr(genRotorPb(RND.nextLong()));
 		}
 		
 		memory();
 		
 		LOG.info("Rotor Count: " + roCount);
 		LOG.info("Rotor Key: " + Arrays.toString(roKey));
-		LOG.info("Rotor Direction: " + Arrays.toString(Enigma4K.roDirectionSpin));
-		LOG.info("Rotor Step Size: " + Arrays.toString(Enigma4K.roStepSize));
+		LOG.info("Rotor Direction: " + Arrays.toString(roDirectionSpin));
 		LOG.info("Plugboard Count: " + pbCount);
 	}
 	
 	/**
 	 * Generate message id.
 	 * 
-	 * @return 
+	 * @return message id
 	 */
 	public static String genMsgID() {
 		
@@ -146,29 +142,37 @@ public class Enigma4K {
 
 		return padText(longToBase36(msgID).toUpperCase(), 9);
 	}
+	
+	/** Sets rotor direction spin.							*/
+	private void roDirectionSpin() {
+		
+		roDirectionSpin = new int[roKey.length];
+		for(int i = 0; i < roDirectionSpin.length; i++)
+			roDirectionSpin[i] = (RND.nextBoolean() ? 1 : -1);
+	}
 
 	/** Steps/rotates rotor after each word encryption.		*/
-	private static void stepRotors(int[] rotorIndex) {
+	private void stepRotors(int[] rotorIndex) {
+		
+		if(RND.nextDouble() > .9955)		roDirectionSpin();
 
 		for(int i = 0; i < rotorIndex.length; i++) {
-			
-			rotorIndex[i] += roStepSize[i] * roDirectionSpin[i];
-
+			rotorIndex[i] += RND.nextInt(31) * roDirectionSpin[i];
 			if(rotorIndex[i] >= DIR_SIZE) rotorIndex[i] = rotorIndex[i] % DIR_SIZE;
 			else if(rotorIndex[i] < 0) rotorIndex[i] = DIR_SIZE + rotorIndex[i];
 		}
 		
 		LOG.info("stepRotors() new rotor settings: " + Arrays.toString(rotorIndex));
 	}
-	
+
 	/**
 	 * Generates a new rotor key.
 	 * 
 	 * @return a random key
 	 */
-	private static int[] genKey(int rotorCount) {
+	private int[] genKey(int rotorCount) {
 		
-		LOG.info("Generates random rotor key.");
+		LOG.info("Enigma4K.genKey() Generates random rotor key.");
 		
 		int[] newKey = new int[rotorCount];
 		for (int i = 0; i < newKey.length; i++)
@@ -177,10 +181,29 @@ public class Enigma4K {
 		return newKey.clone();
 	}
 	
+	private int[] seqRoOrder;		// sequential rotor order 0,1,2,3, ...
+	
+	/**
+	 * Randomize rotor order.
+	 * 
+	 * @return a new rotor order
+	 */
+	private int[] rndOrder(Random rnd) {
+
+		if(seqRoOrder == null) {
+			seqRoOrder = new int[roKey.length];
+			for(int i = 0; i < seqRoOrder.length; i++)		seqRoOrder[i] = i;
+		}
+	
+		int[] newOrder = seqRoOrder.clone();
+		Util.shuffle(rnd, newOrder);
+		return newOrder;
+	}
+	
 	/** Resets rotor key.	*/
-	public void resetKey() {
-		Enigma4K.roIndex = Enigma4K.roKey.clone();
-		LOG.info("AdvEnigma.resetKey() key: " + Arrays.toString(Enigma4K.roKey));
+	protected void resetKey() {
+		roIndex = roKey.clone();
+		LOG.info("Enigma4K.resetKey() key: " + Arrays.toString(roKey));
 	}
 	
 	/**
@@ -213,7 +236,7 @@ public class Enigma4K {
 	 * @param plainText plaint text to be encrypted
 	 * @return crypt text
 	 */
-	public String encryptText(String plainText) throws Exception {
+	private String encryptText(String plainText) throws Exception {
 		
 		LOG.info("Enigma4K.encryptText(" + plainText + ")");
 		
@@ -224,29 +247,22 @@ public class Enigma4K {
 		String[] wordList = directory.parceWords(plainText.toLowerCase());
 		ArrayList<Integer> wordCodeList = new ArrayList<>();
 		
-		LOG.info("Enigma4K.encryptText().wordList.length: " + wordList.length);
+		LOG.debug("Enigma4K.encryptText().wordList.length: " + wordList.length);
+		LOG.debug("Enigma4K.encryptText().wordList.data: " + Arrays.toString(wordList));
 		
 		for (String word: wordList) {
 
 			Integer wordCode = directory.getKeyCode(word);
-			log.append(word).append(": ").append(wordCode).append("\t");
+			log.append(word).append(": ").append(wordCode).append(", ");
 			
 			if(wordCode == null) {
-				
-				LOG.debug("Enigma4K.encryptText word:" + word + ", wordCode:" + wordCode);
-				
-				char[] letters = word.toCharArray();
-				
-				LOG.debug("Enigma4K.encryptText letter arr: " + Arrays.toString(letters));
+
+				LOG.debug("Enigma4K.encryptText letter: " + Arrays.toString(word.toCharArray()));
 				
 				wordCodeList.add(directory.getKeyCode("<%"));
-				for(char l: letters) {
-					
+				for(char l: word.toCharArray()) {
 					Integer keyCode = directory.getKeyCode(String.valueOf(l));
-					wordCodeList.add(keyCode);
-
-					if(keyCode == null)
-						System.out.println("null keyCode for char: " + l + "|" + Character.getNumericValue(l));
+					if(keyCode != null)		wordCodeList.add(keyCode);
 				}
 				wordCodeList.add(directory.getKeyCode("%>"));
 			}
@@ -254,9 +270,6 @@ public class Enigma4K {
 		}
 		
 		LOG.debug(log.toString());
-		log = new StringBuilder();
-		
-		String[] base36List = new String[wordCodeList.size()];
 		
 		LOG.debug("Enigma4K.encryptText.wordCodeList: " + wordCodeList.size());
 		LOG.debug("Enigma4K.encryptText.wordCodeList.data: " + Arrays.toString(wordCodeList.toArray()));
@@ -264,33 +277,27 @@ public class Enigma4K {
 		// wordCodeList check
 		LOG.debug("wordCodeList: " + Arrays.toString(wordCodeList.toArray()));
 		
-		for(Integer wordCode: wordCodeList)
-			if(wordCode == null)	throw new Exception("Unable to encrypt null.");
+		StringBuilder strBuild = new StringBuilder();
 
-		int i = 0;
 		for(int wordCode: wordCodeList) {
 			
-			int pbWordCode = -1, rWordCode = -1;
-			for(int m = 0; m < CRYPT_MULTI; m++) {
-				pbWordCode = pbEncrypt(wordCode, i);
-					log.append("pbE:").append(pbWordCode).append("\t");
-				rWordCode = rotorEncrypt(pbWordCode);
-					log.append("rE:").append(rWordCode).append("\t");
-			}
-				pbWordCode = pbEncrypt(rWordCode, i);
-					log.append("pbE:").append(pbWordCode).append("\t");
+			log = new StringBuilder();
+			log.append("wordCode:").append(wordCode).append(", ");
 
-			String base36Str = padText(intToBase36(pbWordCode), 3).toUpperCase();
-			base36List[i] = base36Str;
-				log.append("base36: ").append(base36Str);
-				
-			i++;
+			int index = RND.nextInt(pbMatrix.length);
+			wordCode = pbCrypt(wordCode, index);
+				log.append("pbE:").append(wordCode).append(", ");
+			wordCode = roCrypt(wordCode);
+				log.append("rE:").append(wordCode).append(", ");
+			wordCode = pbCrypt(wordCode, index);
+				log.append("pbE:").append(wordCode).append(", ");
+
+			String base36Str = padText(intToBase36(wordCode), 3).toUpperCase();
+				strBuild.append(base36Str);
+				log.append("base36:").append(base36Str);
 			
-			LOG.info(log.toString());
+			LOG.debug(log.toString());
 		}
-		
-		StringBuilder strBuild = new StringBuilder();
-		for(String base36: base36List)	strBuild.append(base36);
 		
 		LOG.info("Encrypts plain text using the plugboard, then using the rotors.");
 				
@@ -298,53 +305,45 @@ public class Enigma4K {
 	}
 	
 	/**
-	 * Plugboard encryption.
+	 * Plugboard encryption/decryption.
 	 * 
 	 * @param wordCode directory wordCode
-	 * @param wordIndex word index in plain text
+	 * @param pbIndex word index in plain text
 	 * @return crypt word
 	 */
-	private int pbEncrypt(int wordCode, int wordIndex) {
+	private int pbCrypt(int wordCode, int pbIndex) {
 		
 		/* plugboard substitution
 		 * each word is substituted using a different plugboard		*/
-		int[] plugboard = pbMatrix[wordIndex % pbMatrix.length];
-		int nWordCode = plugboard[wordCode];
+		int[] plugboard = pbMatrix[pbIndex];
+
+		LOG.debug("Enigma4K.pbCrypt(" + wordCode + ", " + pbIndex + "): pbIndex: " +
+			(pbIndex % pbMatrix.length) + ", newWordCode: " + plugboard[wordCode]);
 		
-		LOG.info("Encrypt text string using plugboard, wordCode: " +
-			wordCode + ", nWordCode: " + nWordCode + ", wordIndex: " + wordIndex);
-		
-		return nWordCode;
+		return plugboard[wordCode];
 	}
 	
-	/**
-	 * Rotor encryption.
-	 * 
-	 * @param wordCode directory wordCode
-	 * @return cryptWord
-	 */
-	private int rotorEncrypt(int wordCode) {
+	/** Rotor encrypt/decrypt.				*/
+	private int roCrypt(int wordCode) {
 		
-		LOG.info("START rotorEncrypt() wordCode: " + wordCode);
+		LOG.info("Enigma4K.roCrypt(" + wordCode + ") START");
+		
+		int[] roOrder = rndOrder(RND);
+		int roID = encrypt ? 0 : roMatrix.length - 1;
 
-		// rotor encrypt
-		for(int roID = 0; roID < roMatrix.length; roID++) {
-			
-			int[] rotor = roMatrix[roID];
+		do {
+				
+			int[] rotor = roMatrix[roOrder[roID]];
+			wordCode = encrypt ?
+				rotor[((roIndex[roID] + wordCode) % DIR_SIZE)] :
+				((((rotor[wordCode] - roIndex[roID]) % DIR_SIZE) + DIR_SIZE) % DIR_SIZE);
 
-			int index = ((roIndex[roID] + wordCode) % DIR_SIZE);
-			int eWordCode = rotor[index];
-			
-			LOG.info("rotorIndex[" + roID + "]: " + roIndex[roID] +
-				", wordCode: " + wordCode + ", index: " + index +
-				", eWordCode: " + eWordCode);
-			wordCode = eWordCode;
+			roID += encrypt ? 1 : -1;
 		}
-		
-		LOG.info("STOP rotorEncrypt() eWordCode: " + wordCode);
-		
+		while( (encrypt && roID < roMatrix.length) || (!encrypt && roID >= 0) );
+
+		LOG.info("Enigma4K.roCrypt() STOP");
 		stepRotors(roIndex);
-		
 		return wordCode;
 	}
 	
@@ -363,6 +362,8 @@ public class Enigma4K {
 	public static String decryptText(String passPhrase, String handle,
 		int roCount, int pbCount, Long dirSeed, String cryptText) throws Exception {
 		
+		LOG.info("Enigma4K.decryptText()");
+		
 		encrypt = false;
 		
 		String msgID = cryptText.substring(0, 9);
@@ -374,15 +375,15 @@ public class Enigma4K {
 		return enigma.decryptText(cryptText);
 	}
 	
-	private boolean wSpace = true;			// white space
-	
 	/**
 	 * Decrypt crypt text.
 	 * 
 	 * @param cryptText
 	 * @return plaint text
 	 */
-	public String decryptText(String cryptText) throws Exception {
+	private String decryptText(String cryptText) throws Exception {
+		
+		LOG.info("Enigma4K.decryptText()");
 		
 		encrypt = false;
 		
@@ -395,27 +396,25 @@ public class Enigma4K {
 
 		String[] cryptTextArr = cryptText.split("(?<=\\G.{3})");
 		StringBuilder text = new StringBuilder();
-		int[] base10List = new int[cryptTextArr.length];
-			
-		for(int i = 0; i < cryptTextArr.length; i++) {
+		boolean wSpace = true;			// white space
+
+		for(String wordCodeStr: cryptTextArr) {
 			
 			log = new StringBuilder();
 			
-				log.append("cryptText: ").append(cryptTextArr[i]).append("\t");
-			base10List[i] = base36ToInt(cryptTextArr[i]);
-				log.append("base36ToInt: ").append(base10List[i]).append("\t");
-			
-			int pbWordCode = -1, rWordCode = -1;
-			for(int m = 0; m < CRYPT_MULTI; m++) {
-				pbWordCode = pbDecrypt(base10List[i], i);
-					log.append("pbD:").append(pbWordCode).append("\t");
-				rWordCode = rotorDecrypt(pbWordCode);
-					log.append("rD:").append(rWordCode).append("\t");
-			}
-				pbWordCode = pbDecrypt(rWordCode, i);
-					log.append("rD:").append(pbWordCode).append("\t");
+				log.append("cryptText: ").append(wordCodeStr).append(", ");
+			int wordCode = base36ToInt(wordCodeStr);
+				log.append("base36ToInt: ").append(wordCode).append(", ");
 
-			String word = directory.getWord(pbWordCode);
+			int index = RND.nextInt(pbMatrix.length);
+			wordCode = pbCrypt(wordCode, index);
+				log.append("pbD:").append(wordCode).append(", ");
+			wordCode = roCrypt(wordCode);
+				log.append("rD:").append(wordCode).append(", ");
+			wordCode = pbCrypt(wordCode, index);
+				log.append("pbD:").append(wordCode).append(", ");
+
+			String word = directory.getWord(wordCode);
 				word = word.replace("\\s,", ",");
 				word = word.replace("\\s.", ".");
 				log.append("direcWord: ").append(word);
@@ -426,7 +425,7 @@ public class Enigma4K {
 			text.append(word.replace("<%", "").replace("%>", ""));
 			if(wSpace)	text.append(" ");
 
-			LOG.info(log.toString());
+			LOG.debug(log.toString());
 		}
 
 		LOG.info("Decrypt encrypted text.");
@@ -441,62 +440,6 @@ public class Enigma4K {
 			.replaceAll(" \\.", ".");			// remove spaces before period
 	}
 	
-	/**
-	 * Plugboard decryption.
-	 * 
-	 * @param wordCode
-	 * @param wordIndex word index in text
-	 * @return 
-	 */
-	private int pbDecrypt(int wordCode, int wordIndex) {
-		
-		LOG.info("Enigma4K.pbDecrypt()");
-		
-		/* plugboard substitution
-		 * each word is substituted using a different plugboard		*/
-//		int[] plugboard = pbMatrix[wordIndex % pbMatrix.length];
-		int[] plugboard = pbMatrix[wordIndex % pbMatrix.length];
-		
-//		int wordCodeIndex = -1;
-//		for(int i = 0; i < plugboard.length; i++)
-//			if(plugboard[i] == wordCode) {
-//				wordCodeIndex = i;
-//				break;
-//			}
-//
-//		LOG.info("Decrypt text string using plugboard, wordCode: " +
-//			wordCode + ", wordCodeIndex: " + wordCodeIndex + ", wordIndex: " + wordIndex);
-		
-		return plugboard[wordCode];
-	}
-	
-	/**
-	 * Rotor decryption.
-	 * 
-	 * @param wordCode
-	 * @return 
-	 */
-	private int rotorDecrypt(int wordCode) {
-		
-		LOG.info("START rotorDecrypt() eWordCode: " + wordCode);
-		
-		// rotor decrypt
-		for(int roID = roMatrix.length - 1; roID >= 0; roID--) {
-
-			int[] rotor = roMatrix[roID];
-			int newWordCode = ((((rotor[wordCode] - roIndex[roID]) % DIR_SIZE) + DIR_SIZE) % DIR_SIZE);
-			LOG.info("roID: " + roID + ", eWordCode: " + wordCode +
-				", rotorIndex[" + roID + "]: " + roIndex[roID] +
-				", newWordCode: " + newWordCode);
-
-			wordCode = newWordCode;
-		}
-		
-		LOG.info("STOP rotorDecrypt() eWordCode: " + wordCode);
-		stepRotors(roIndex);
-		return wordCode;
-	}
-	
 	/** Base 10 to Base 36.		*/
 	private static String intToBase36(int base10) {
 		return Integer.toString(base10, Character.MAX_RADIX);
@@ -507,6 +450,7 @@ public class Enigma4K {
 		return Integer.parseInt(base36, Character.MAX_RADIX);
 	}
 	
+	/** Base 10 to Base 36.		*/
 	public static String longToBase36(long base10) {
 		return Long.toString(base10, Character.MAX_RADIX);
 	}
@@ -527,7 +471,7 @@ public class Enigma4K {
 	/** String to long hash using SipHash 64bit.			*/
 	private static long hashCode(String str) {
 
-		// java jashCode
+		// java long hashCode
 //		long hash = 0;
 //		
 //		if(str.length() > 0) {
@@ -541,10 +485,6 @@ public class Enigma4K {
 		SipHash hasher = new SipHash(hashKey.getBytes());
 		return hasher.hash(str.getBytes()).get();
 	}
-
-	private long nextSeed() {			return RND.nextLong();				}
-	private int nextSeed(int bound) {	return RND.nextInt(bound);			}
-	private boolean nextBool() {		return RND.nextBoolean();			}
 	
 	private static int[] seqRotor;		// sequential rotor 0,1,2,3, ...
 	
@@ -571,7 +511,7 @@ public class Enigma4K {
 	 * Array inversion, index and value switch.
 	 * 
 	 * @param arr
-	 * @return 
+	 * @return inverted array
 	 */
 	private static int[] invArr(int[] arr) {
 		
@@ -596,6 +536,7 @@ public class Enigma4K {
 			directory.randomizeDirectory(seed);
 	}
 	
+	/** Memory usage.			*/
 	private static void memory() {
 		
 		long MEGABYTE = 1024L * 1024L;
@@ -613,7 +554,7 @@ public class Enigma4K {
 		sb.append("max memory: ").append(format.format(maxMemory / MEGABYTE)).append("\n");
 		sb.append("total free memory: ").append(format.format((freeMemory + (maxMemory - allocatedMemory)) / MEGABYTE)).append("\n");
 		
-		System.out.println(sb.toString());
+		LOG.debug(sb.toString());
 	}
 
 //	/**
@@ -644,7 +585,7 @@ public class Enigma4K {
 //			repeat[1] = Enigma4K.encryptText(password, handle, 103, 103, null, repeat[0]);
 //		}
 //		catch(Exception e) {
-//			LOG.error("Encrypt Error", e);
+//			LOG.FATAL("Encrypt Error", e);
 //		}
 //
 //		try {
@@ -652,7 +593,7 @@ public class Enigma4K {
 //			repeat[2] = Enigma4K.decryptText(password, handle, 103, 103, null, repeat[1]);
 //		}
 //		catch(Exception ex) {
-//			LOG.error("Decrypt Text", ex);
+//			LOG.FATAL("Decrypt Text", ex);
 //		}
 //		
 //		for(String line: textLine)	System.out.println(line);

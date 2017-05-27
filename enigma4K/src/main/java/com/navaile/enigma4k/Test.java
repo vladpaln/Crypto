@@ -207,7 +207,26 @@ public class Test {
 //		System.out.println("The index of element " + searchVal + " is : " + retVal);
 
 
-		System.out.println(Long.parseLong(""));
+//		Random rnd = new Random();
+//
+//		int count = 100;
+//
+//		for(int x = 0; x < 100; x++)
+//			System.out.println(
+//				(int)(	(count * .84) + (count * (rnd.nextFloat() * .16))	)
+//			);
 	}
+	
+	
+	/*
+	
+	
+	10^14=2^x
+	x=14*ln(10)/ln(2)
+	
+	
+	
+	
+	*/
 
 }

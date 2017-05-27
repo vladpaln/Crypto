@@ -5,50 +5,52 @@
  */
 package com.navaile.enigma4k;
 
+import javax.swing.JFrame;
+
 /**
- *
- * @author vladpaln
+ * About dialog window.
+ * 
+ * @author navaile
  */
 public class AboutDialog extends javax.swing.JDialog {
 	
-	private static String about =
-		"Parameters - Both parties must have this information.\n" +
-		"Rotor #: Number of rotors.\n" +
-		"Plugboard #: Number of plugboards.\n" +
-		"Recipient: Recipient email or online handle. Used to encrypt message.\n" +
-		"Crypt Phrase: A pass phrase used to encrypt/decrypt text.\n" +
-		"Text - Plain text to be encrypted or crypt text to be decrypted.\n" +
-		
-		"Additional Parameters - For increased security.\n" +
-		"Directory Seed: Used to randomize directory. Default is blank.\n" +
+	private static final String about =
+		"<html>" +
+		"<body style=\"font: 12px verdana;\">" +
+		"<b>Parameters</b> - Both parties must have this information.<br />" +
+		"Rotor #: Number of rotors.<br />" +
+		"Plugboard #: Number of plugboards.<br />" +
+		"Recipient: Recipient email or online handle. Used to encrypt message.<br />" +
+		"Crypt Phrase: A pass phrase used to encrypt/decrypt text.<br />" +
+		"Text - Plain text to be encrypted or crypt text to be decrypted.<br /><br />" +
 
-		"About Enigma 4K\n" +
-		"Enigma 4K is based on the original with several improvements. The number\n" +
-		"of rotors and plugboards can now be set to any value between 97 and 4K.\n" +
-		"The only limitation is system memory that holds all of the rotors and\n" +
-		"plugboard data. The reflector has also been removed and rotors now have\n" +
-		"46,655 values.\n\n" +
+		"Additional Parameters - For increased security.<br />" +
+		"Directory Seed: Used to randomize directory. Default is blank.<br /><br />" +
 
-		"Features\n" +
-		"- each message will have a different seed\n" +
-		"- no reflector, value can map to itself\n" +
-		"- random step size for each rotor\n" +
-		"- random direction rotor rotation\n\n" +
+		"<b>About Crypto Mk II</b><br />" +
+		"Crypto Mk II design is based on several crypt machines including Enigma, Fialka and " +
+		"SIGABA. Atempts have been made to remove known weeknesses. The number of rotors and " +
+		"plugboards can now be set to any value between 97 and 4K. The only limitation is " +
+		"system memory that holds all of the rotors and plugboard data. The reflector has also " +
+		"been removed and rotors now have 46,655 values.<br /><br />" +
 
-		"How Enigma 4K Works\n" +
-		"Enigma 4K encryption starts by first encoding plain text into its numeric\n" +
-		"equivalent, but instead of encoding letters, Enigma 4K encodes entire\n" +
-		"words. Next a seed is generated using the pass phrase and email/handle.\n" +
-		"Use of email/handle is highly recommended to avoid cracking using common\n" +
-		"pass phrases. The generated seed is used to spawn random rotors, plugboards,\n" +
-		"rotor step direction, and rotor step size. The encoded value is passed\n" +
-		"through a plugboards => rotors sequence multiple times before converting\n" +
-		"the final value to base36 text.\n\n";
+		"<b>Features</b><br />" +
+		"- each message will have a different seed<br />" +
+		"- no reflector, value can map to itself<br />" +
+		"- random step size for each rotor<br />" +
+		"- random direction rotor rotation<br /><br />" +
 
-	/**
-	 * Creates new form AboutDialog
-	 */
-	public AboutDialog(java.awt.Frame parent, boolean modal) {
+		"<b>How Crypto Mk II Works</b><br />" +
+		"Crypto Mk II encryption starts by first converting words into their numeric equivalent " +
+		"using a directory. Instead of encoding letters Crypto Mk II encodes entire words. Next " +
+		"a seed is generated using the pass phrase and email/handle. The generated seed is used " +
+		"to spawn random rotors, plugboards, rotor step direction, and rotor step size. The encoded " +
+		"value is passed through a plugboards => rotors sequence before converting the final value " +
+		"to base36 text.<br /><br />" +
+		"</body></html>";
+
+	/** Creates new form AboutDialog			*/
+	public AboutDialog(JFrame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();
 		
@@ -72,7 +74,8 @@ public class AboutDialog extends javax.swing.JDialog {
         aboutPane = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("About Enigma 4K");
+        setTitle("About Crypto Mk II");
+        setLocation(new java.awt.Point(450, 75));
 
         closeButton.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
         closeButton.setText("Close");
@@ -84,6 +87,7 @@ public class AboutDialog extends javax.swing.JDialog {
 
         aboutPane.setEditable(false);
         aboutPane.setBackground(new java.awt.Color(240, 240, 240));
+        aboutPane.setContentType("text/html"); // NOI18N
         aboutPane.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
         jScrollPane1.setViewportView(aboutPane);
 
