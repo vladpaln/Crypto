@@ -1,7 +1,7 @@
 # Crypto Mk II
 Cipher software.  
   
-![Alt text](/screenshot_2.png?raw=true "Crypto Mk II")  
+![Alt text](/screenshot_1.png?raw=true "Crypto Mk II")  
   
 ## Features
 - word encoding instead of letter encoding
