@@ -65,7 +65,11 @@ public class Directory {
 		loadDictionary();
 	}
 	
-	/** Returns static instance of Directory DB.	*/
+	/** 
+	 * Returns static instance of Directory DB.
+	 * 
+	 * @return Directory Singleton
+	 */
 	public static Directory getInstance() {
 		
 		if(dir == null)		dir = new Directory();
@@ -81,24 +85,20 @@ public class Directory {
 	private String preprocess(String plainText) {
 		
 		LOG.info("Directory.preprocess()");
-		
-		String pattern = "[^\\s\\w\\p{Punct}]";		// allowed chars
 
 		StrBuilder newMsg = new StrBuilder(plainText);
 
-			newMsg.replaceAll("\\r\\n|\\r|\\n", " ")
+			newMsg
 			.replaceAll(System.getProperty("line.separator"), " ")
-			.replaceAll("\\s", " ")
-//			.replaceAll("/", " forward slash ")
-//			.replaceAll("\\", " backward slash ")
 //			.replaceAll("", "  ")
-//			.replaceAll("\\n", " ")
-//			.replaceAll("\\r", " ")
 					
 			.replaceAll(".", " .")
 			.replaceAll(",", " ,")
 			.replaceAll(":", " :")
 			.replaceAll(";", " ;")
+					
+			.replaceAll("(", " ( ")
+			.replaceAll(")", " ) ")
 
 //			.replaceAll("/", " division ")
 //			.replaceAll("*", " asterisk ")
@@ -143,15 +143,19 @@ public class Directory {
 			.replaceAll("£", " pounds sterling ")
 			.replaceAll("¥", " chinese/japenese yuan ")
 			.replaceAll("§", " micro/section ")
-			
-			.replaceAll("\\s{2,}", " ")
-			// .replaceAll("", "")
-					
-			// removes nonstandard characters
-			.replaceAll(pattern, "")
 			.trim();
+			
+		final String pattern = "[^\\s\\w\\p{Punct}]";		// disallowed chars
+			
+		plainText = newMsg.toString()
+			.replaceAll("\\r\\n|\\r|\\n", " ")
+			.replaceAll("\\s", " ")
+			.replaceAll("\\s{2,}", " ")
+				
+			// removes nonstandard characters
+			.replaceAll(pattern, " ");
 		
-		return newMsg.toString();
+		return plainText;
 	}
 
 	/**
@@ -166,7 +170,12 @@ public class Directory {
 		return preprocess(text).split(" ");
 	}
 
-	/** Converts word to keyCode.				*/
+	/** 
+	 * Converts text word to keyCode.
+	 * 
+	 * @param word text word
+	 * @return integer keyCode representing that word
+	 */
 	public Integer getKeyCode(String word) {
 		
 		LOG.info("Directory.getKeyCode()");
@@ -176,19 +185,26 @@ public class Directory {
 		 * if the directory has been randomized then a slower loop is used.
 		 */
 		
+		word = word.toLowerCase();
+		
 		if(ordered) {
 			int i =  Arrays.binarySearch(wordArr, word);
 			if(i >= 0)		return i;
 		}
-		else {
+		else {	// randomized directory
 			for(int i = 0; i < wordArr.length; i++)
-				if(wordArr[i].equals(word.toLowerCase()))		return i;
+				if(wordArr[i].equals(word))		return i;
 		}
 		
 		return null;
 	}
 	
-	/** Converts keyCode to word.				*/
+	/**
+	 * Converts keyCode to text word.
+	 * 
+	 * @param keyCode directory keyCode integer (index)
+	 * @return text word
+	 */
 	public String getWord(Integer keyCode) {
 		
 		LOG.info("Directory.getWord()");
@@ -196,17 +212,18 @@ public class Directory {
 		else											return null;
 	}
 	
+	/** Loads directory from resource.		*/
 	private void loadDictionary() {
 		
 		LOG.info("Directory.loadDictionary()");
 
-		ArrayList<String> arrList = new ArrayList<>();
+		final List<String> arrList = new ArrayList<>(Crypt.DIR_SIZE);
 		
 		InputStream is = getClass().getClassLoader().getResourceAsStream("directory");
 		try( BufferedReader br = new BufferedReader(new InputStreamReader(is)) ) {
 			
 			for(String word; (word = br.readLine()) != null; )
-				if(word.length() != 0)		arrList.add(word.trim());
+				if(word.length() != 0)	arrList.add(word.toLowerCase().trim());
 			
 			wordArr = arrList.toArray(new String[arrList.size()]);
 			Arrays.sort(wordArr);
@@ -220,13 +237,17 @@ public class Directory {
 	 * Randomizing the directory increases security however both parties must
 	 * use the same seed when randomizing the directory to ensure that both
 	 * parties have the same directory.
+	 * 
+	 * @param seed directory randomization seed
 	 */
-	public void randomizeDirectory(long seed) {
+	public void randomizeDirectory(Long seed) {
 		
 		LOG.info("Directory.randomizeDirectory(" + seed + ")");
+		
+		ordered = seed == null;
 		Arrays.sort(wordArr);
-		Util.shuffle(new Random(seed), wordArr);
-		ordered = false;
+		
+		if(!ordered)	Util.shuffle(new Random(seed), wordArr);
 	}
 
 	/** Builds directory from word frequency lists.			*/
@@ -234,20 +255,18 @@ public class Directory {
 		
 		LOG.info("Directory.buildDirectory()");
 		
-		Set<String> wordSet = new HashSet<>();
-		
-		String[] fileList = {
+		final String[] fileList = {
 			"src/main/resources/5k_words.txt",
 			"src/main/resources/10k_words.txt",
 			"src/main/resources/60k_words.txt"
 		};
 		
+		final Set<String> wordSet = new HashSet<>(Crypt.DIR_SIZE);
 		for(String p: fileList) {
-			
 			try(BufferedReader br = new BufferedReader(new FileReader(p))) {
 				for(String line; (line = br.readLine()) != null; ) {
 					if(line.length() != 0)		wordSet.add(line.toLowerCase());
-					if(wordSet.size() >= (Enigma4K.DIR_SIZE - 50))	break;
+					if(wordSet.size() >= (Crypt.DIR_SIZE - 50))	break;
 				}
 			}
 			catch(Exception ex) {	LOG.error("Builds Directory", ex);	}
@@ -256,14 +275,16 @@ public class Directory {
 		// directory
 		try {
 
-			String path = Directory.class.getClass().getResource("/directory").getPath();
+			final String path = Directory.class.getClass().getResource("/directory").getPath();
 			
 			try(PrintWriter pw = new PrintWriter(path, "UTF-8")) {
 
-				for(String word: wordSet)		pw.println(word.trim());
+				wordSet.forEach((word) -> {		pw.println(word.trim());	});
+				
+				// value never used denotes custom additions to directory
 				pw.println("--- CUST ---");
 
-				// word partitioning
+				// word/number/symbol partitioning
 				pw.println("<%");
 				pw.println("%>");
 
@@ -307,7 +328,7 @@ public class Directory {
 				pw.println("{");
 				pw.println("}");
 			}
-			catch(IOException ex) {	LOG.error("Write Directory to File", ex);	}
+			catch(IOException e) {	LOG.error("Write Directory to File", e);	}
 		}
 		catch(Exception e) {	LOG.error("Unable to access file.", e);	}
 	}

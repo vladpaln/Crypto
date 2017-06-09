@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
@@ -215,7 +217,71 @@ public class Test {
 //			System.out.println(
 //				(int)(	(count * .84) + (count * (rnd.nextFloat() * .16))	)
 //			);
+
+
+//		ListNode newHead  = null;
+//		
+//		white(head != null) {
+//		
+//			ListNode next = head.next;
+//			head.next = newHead;
+//			newHead = head;
+//			
+//			head = next;
+//		}
+//		
+//		return newHead;
+
+//		System.out.println(Integer.valueOf(new String("test")));
+
+//		long startTime = System.nanoTime();
+//		System.out.println(Arrays.toString(primeFactors(20).toArray()));
+//		System.out.format("Exec Time: %d", System.nanoTime() - startTime);
+		
+		// 3578874
+		// 3974816
+		// 3096875
+		// 399889
+		// 534107
+		
+		System.out.println(Integer.MIN_VALUE);
+		System.out.println(Integer.MAX_VALUE);
+		
+		System.out.format("NegFlip: %d => %d%n", Integer.MIN_VALUE, (Integer.MIN_VALUE * -1));
+		System.out.format("PosFlip: %d => %d%n", Integer.MAX_VALUE, (Integer.MAX_VALUE * -1));
 	}
+	
+	public static List<Integer> primeFactors(int number) {
+
+		List<Integer> factors = new ArrayList<>();
+		for (int i = 2; i <= number/i; i++) {
+			while(number % i == 0) {
+				factors.add(i);
+				number /= i;
+			}
+		}
+
+		if(number > 1)	factors.add(number);
+
+		return factors;
+    }
+	
+//	public static List<Integer> insertSort(final List<Integer> numbers) {
+//		
+//		final List<Integer> sortedList = new LinkedList<>();
+//		
+//		originalList: for(Integer number : numbers) {
+//			for (int i = 0; i < sortedList.size(); i++) {
+//				if (number < sortedList.get(i)) {
+//					sortedList.add(i, number);
+//					continue originalList;
+//				}
+//			}
+//
+//			sortedList.add(sortedList.size(), number);
+//		}
+//		return sortedList;
+//	}
 	
 	
 	/*
@@ -223,10 +289,6 @@ public class Test {
 	
 	10^14=2^x
 	x=14*ln(10)/ln(2)
-	
-	
-	
-	
 	*/
 
 }

@@ -59,7 +59,7 @@
 				  <manifest>
 					<addClasspath>true</addClasspath>
 					<classpathPrefix>lib/</classpathPrefix>
-					<mainClass>com.navaile.enigma4k.EnigmaGUI</mainClass>
+					<mainClass>com.navaile.enigma4k.UI</mainClass>
 				  </manifest>
 				</archive>
 			  <descriptorRefs>

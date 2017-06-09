@@ -27,8 +27,8 @@ public class AboutDialog extends javax.swing.JDialog {
 		"Additional Parameters - For increased security.<br />" +
 		"Directory Seed: Used to randomize directory. Default is blank.<br /><br />" +
 
-		"<b>About Crypto Mk II</b><br />" +
-		"Crypto Mk II design is based on several crypt machines including Enigma, Fialka and " +
+		"<b>About Crypto</b><br />" +
+		"Crypto design is based on several crypt machines including Enigma, Fialka and " +
 		"SIGABA. Atempts have been made to remove known weeknesses. The number of rotors and " +
 		"plugboards can now be set to any value between 97 and 4K. The only limitation is " +
 		"system memory that holds all of the rotors and plugboard data. The reflector has also " +
@@ -37,17 +37,22 @@ public class AboutDialog extends javax.swing.JDialog {
 		"<b>Features</b><br />" +
 		"- each message will have a different seed<br />" +
 		"- no reflector, value can map to itself<br />" +
-		"- random step size for each rotor<br />" +
-		"- random direction rotor rotation<br /><br />" +
+		"- random step size for each rotor step<br />" +
+		"- random rotor direction rotation, direction randomly changes<br />" +
+		"- actual rotor/plugboard count is randomly selected within 90% \u00B1 10% of provided value<br />" +
+		"- word directory can be randomized by providing a seed<br />";
 
-		"<b>How Crypto Mk II Works</b><br />" +
-		"Crypto Mk II encryption starts by first converting words into their numeric equivalent " +
-		"using a directory. Instead of encoding letters Crypto Mk II encodes entire words. Next " +
+	/*		
+			
+		"<b>How Crypto Works</b><br />" +
+		"Crypto encryption starts by first converting words into their numeric equivalent " +
+		"using a directory. Instead of encoding letters Crypto encodes entire words. Next " +
 		"a seed is generated using the pass phrase and email/handle. The generated seed is used " +
 		"to spawn random rotors, plugboards, rotor step direction, and rotor step size. The encoded " +
 		"value is passed through a plugboards => rotors sequence before converting the final value " +
 		"to base36 text.<br /><br />" +
 		"</body></html>";
+	*/
 
 	/** Creates new form AboutDialog			*/
 	public AboutDialog(JFrame parent, boolean modal) {
@@ -58,6 +63,8 @@ public class AboutDialog extends javax.swing.JDialog {
 			aboutPane.setText(about);
 			aboutPane.setCaretPosition(0);
 		}
+		
+		setTitle("About Crypto " + Crypt.VER);
 	}
 
 	/**
@@ -74,7 +81,7 @@ public class AboutDialog extends javax.swing.JDialog {
         aboutPane = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("About Crypto Mk II");
+        setTitle("About Crypto");
         setLocation(new java.awt.Point(450, 75));
 
         closeButton.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
