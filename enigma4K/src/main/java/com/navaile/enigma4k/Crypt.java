@@ -413,9 +413,12 @@ public class Crypt {
 	 * @throws Exception 
 	 */
 	public static String decryptText(String passPhrase, String handle,
-		int roCount, int pbCount, Long dirSeed, String cryptText) throws Exception {
+		int roCount, int pbCount, Long dirSeed, String cryptText) {
 		
 		LOG.info("Crypt.decryptText()");
+		
+		if(cryptText.length() < 12 || cryptText.length() % 3 != 0 || cryptText.contains(" "))
+			return cryptText;
 		
 		final String msgID = cryptText.substring(0, 9);
 		cryptText = cryptText.substring(9, cryptText.length());
@@ -432,16 +435,13 @@ public class Crypt {
 	 * @param cryptText
 	 * @return plaint text
 	 */
-	protected String decryptText(String cryptText) throws Exception {
+	protected String decryptText(String cryptText) {
 		
 		LOG.info("Crypt.decryptText()");
 		
-		StringBuilder log;
+		if(cryptText.length() % 3 != 0)		return cryptText;
 		
-		if(cryptText.length() % 3 != 0) {
-			LOG.error("Encrypted text must be a multiple of three, cryptText: " + (cryptText.length() % 3));
-			throw new Exception("cryptText incorrect length");
-		}
+		StringBuilder log;
 
 		final String[] cryptTextArr = cryptText.split("(?<=\\G.{3})");
 		final StringBuilder text = new StringBuilder();

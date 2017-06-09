@@ -6,11 +6,15 @@
 package com.navaile.enigma4k;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Random;
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Crypt unit test class extends Crypt.
@@ -35,7 +39,7 @@ public class CryptTest extends Crypt {
 		super(passPhrase, handle, msgID, roCount, pbCount, true);
 	}
 	
-	@org.junit.Test
+	@Test
 	public void cryptTest() {
 		
 		try {
@@ -45,7 +49,6 @@ public class CryptTest extends Crypt {
 					pbCount, null, cryptText);
 			
 			Assert.assertEquals(msg.toLowerCase(), text.toLowerCase());
-			
 		}
 		catch(Exception ex) {	ex.printStackTrace();					}
 	}
@@ -94,12 +97,21 @@ public class CryptTest extends Crypt {
 	
 	@Test
 	public void stepRotorsTest() {
-//		this.stepRotors(RND, , rotorIndex, roSpin, DIR_SIZE);
+		
+		Random r = new Random(0);
+		
+		int[] rotorInd = {120, 132, 141, 137, 146};
+		int[] spin = {1, -1, -1, 1, 1};
+		int dirSize = 250;
+		
+		this.stepRotors(r, rotorInd, spin, dirSize);
+		assertArrayEquals(rotorInd, new int[] {122, 130, 121, 148, 159});
+		
+		rotorInd = new int[] {249, 0, 249, 0, 249};
+		this.stepRotors(r, rotorInd, spin, dirSize);
+		System.out.println(Arrays.toString(rotorInd));
+		assertArrayEquals(rotorInd, new int[] {6, 249, 244, 7, 14});
 	}
-	
-	
-	
-	
 
 	@Test
 	public void padTextTest() {

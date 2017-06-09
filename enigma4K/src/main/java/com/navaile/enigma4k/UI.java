@@ -338,21 +338,9 @@ public class UI extends javax.swing.JFrame {
 		if(dirSeedText.length() != 0 && dirSeedText.matches("[0-9]+"))	
 			try {	dirSeed = Long.parseLong(dirSeedText);						}
 			catch(Exception e) {	LOG.fatal("Parse Directory Seed", e);		}
-		
-//		System.out.println(
-//			"passPhrase: " + passPhrase +
-//			", handle: " + handle +
-//			", roCount: " + roCount +
-//			", pbCount: " + pbCount +
-//			", dirSeed: " + dirSeed +
-//			", text: " + textField.getText()
-//		);
-		
-		try {
-			textField.setText(Crypt.encryptText(passPhrase, handle, roCount,
-					pbCount, dirSeed, textField.getText()));
-		}
-		catch(Exception e) {	LOG.fatal("Enigma Encryption Exception", e);	}
+
+		textField.setText(Crypt.encryptText(passPhrase, handle, roCount,
+			pbCount, dirSeed, textField.getText()));
     }//GEN-LAST:event_encryptButtonActionPerformed
 
     private void decryptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decryptButtonActionPerformed
@@ -378,20 +366,8 @@ public class UI extends javax.swing.JFrame {
 			try {	dirSeed = Long.parseLong(dirSeedText);						}
 			catch(Exception e) {	LOG.fatal("Parse Directory Seed", e);		}
 
-//		System.out.println(
-//			"passPhrase: " + passPhrase +
-//			", handle: " + handle +
-//			", roCount: " + roCount +
-//			", pbCount: " + pbCount +
-//			", dirSeed: " + dirSeed +
-//			", text: " + textField.getText()
-//		);
-		
-		try {
-			textField.setText(Crypt.decryptText(passPhrase, handle, roCount,
-					pbCount, dirSeed, textField.getText()));
-		}
-		catch(Exception e) {	LOG.fatal("Enigma Decryption Exception", e);	}
+		textField.setText(Crypt.decryptText(passPhrase, handle, roCount,
+			pbCount, dirSeed, textField.getText()));
     }//GEN-LAST:event_decryptButtonActionPerformed
 
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
