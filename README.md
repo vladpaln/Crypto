@@ -18,8 +18,8 @@ Cipher software.
 - ability to randomize word directory for increased security
 
 ## Usage
-- explorer: run enigma4K-1.0-SNAPSHOT-jar-with-dependencies.jar
-- command line: java -Xmx2g -jar enigma4K-1.0-SNAPSHOT-jar-with-dependencies.jar
+- explorer: double click crypto.jar
+- command line: java -Xmx2g -jar crypto.jar
 - rotor count is limited by java heap size
 - accepted text characters: A-Z, a-z, 0-9, standard punctuation
 
