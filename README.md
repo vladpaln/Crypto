@@ -1,7 +1,7 @@
 # Crypto
 Cipher software.  
   
-![Alt text](/screenshot_1.png?raw=true "Crypto")  
+![Alt text](/scr2.png?raw=true "Crypto")  
   
 ## Features
 - word encoding instead of letter encoding
