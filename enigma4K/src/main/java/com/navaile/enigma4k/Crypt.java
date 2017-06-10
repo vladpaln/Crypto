@@ -172,7 +172,6 @@ public class Crypt {
 	 * 
 	 * @param rnd random number generator
 	 * @param roCount rotor count
-	 * 
 	 * @return array, each value designates spin direction for that rotor
 	 */
 	protected int[] roSpin(Random rnd, int roCount) {
@@ -194,6 +193,7 @@ public class Crypt {
 	 */
 	protected void stepRotors(Random rnd, int[] rotorIndex, int[] roSpin, int DIR_SIZE) {
 		
+		// TODO implement this
 //		if(rnd.nextDouble() > .9955)		roSpin(rnd, roCount);
 
 		for(int i = 0; i < rotorIndex.length; i++) {
@@ -208,8 +208,9 @@ public class Crypt {
 	/**
 	 * Generates a new rotor key.
 	 * 
+	 * @param rnd random number generator
 	 * @param roCount rotor count
-	 * 
+	 * @param DIR_SIZE directory size
 	 * @return a random key
 	 */
 	protected int[] genKey(Random rnd, int roCount, int DIR_SIZE) {
@@ -228,7 +229,6 @@ public class Crypt {
 	 * 
 	 * @param rnd random number generator
 	 * @param roKeySize rotor key size, or rotor count
-	 * 
 	 * @return a new rotor order
 	 */
 	protected int[] rndOrder(Random rnd, int roKeySize) {			
@@ -351,7 +351,6 @@ public class Crypt {
 	 * @param wordCode directory wordCode
 	 * @param pbIndex word index of plain text
 	 * @param pbMatrix plugboard matrix
-	 * 
 	 * @return crypt word
 	 */
 	protected int pbCrypt(int wordCode, int pbIndex, int[][] pbMatrix) {
@@ -375,7 +374,7 @@ public class Crypt {
 	 * @param wordCode word code integer
 	 * @param encrypt encryption flag, true if encrypting
 	 * @param DIR_SIZE directory size
-	 * @return 
+	 * @return encrypted/decrypted wordCode
 	 */
 	protected int roCrypt(Random rnd, int[][] roMatrix, int[] roIndex, int wordCode,
 			boolean encrypt, int DIR_SIZE) {
@@ -410,7 +409,6 @@ public class Crypt {
 	 * @param dirSeed directory randomization seed, default is null
 	 * @param cryptText text message to encrypt
 	 * @return plain text
-	 * @throws Exception 
 	 */
 	public static String decryptText(String passPhrase, String handle,
 		int roCount, int pbCount, Long dirSeed, String cryptText) {
@@ -496,7 +494,6 @@ public class Crypt {
 	 * Base 10 to Base 36 conversion.
 	 * 
 	 * @param base10 base 10 integer
-	 * 
 	 * @return base 36 string
 	 */
 	protected static String intToBase36(int base10) {
@@ -518,7 +515,6 @@ public class Crypt {
 	 * Base 10 to Base 36 conversion.
 	 * 
 	 * @param base10 long
-	 * 
 	 * @return base 36 string
 	 */
 	protected static String longToBase36(long base10) {
@@ -531,7 +527,6 @@ public class Crypt {
 	 * @param str string to pad
 	 * @param minSize min string size
 	 * @param pad string to use as padding
-	 * 
 	 * @return padded string
 	 */
 	protected static String padText(String str, int minSize, String pad) {
@@ -540,8 +535,12 @@ public class Crypt {
 		return str;
 	}
 	
-	/** String to long hash using SipHash 64bit.			*/
-	protected static long cryptHash(String str) {
+	/** 
+	 * String to long hash using SipHash 64bit.
+	 * @param passPhrase used to generate a seed
+	 * @return generated seed
+	 */
+	protected static long cryptHash(String passPhrase) {
 
 		// java long hashCode
 //		long hash = 0;
@@ -555,7 +554,7 @@ public class Crypt {
 //		return hash;
 
 		SipHash hasher = new SipHash(HASH_KEY.getBytes());
-		return hasher.hash(str.getBytes()).get();
+		return hasher.hash(passPhrase.getBytes()).get();
 	}
 	
 	/**
@@ -578,7 +577,6 @@ public class Crypt {
 	 * Array inversion, index and value switch.
 	 * 
 	 * @param arr array to invert
-	 * 
 	 * @return inverted array
 	 */
 	protected static int[] invArr(int[] arr) {
@@ -605,7 +603,9 @@ public class Crypt {
 		if(DIRECT != null)	DIRECT.randomizeDirectory(seed);
 	}
 	
-	/** Memory usage.			*/
+	/** 
+	 * Memory usage.
+	 */
 	protected static void memory() {
 		
 		long MEGABYTE = 1024L * 1024L;
