@@ -529,14 +529,14 @@ public class Crypt {
 	 * Text to pad.
 	 * 
 	 * @param str string to pad
-	 * @param length desired string length
+	 * @param minSize min string size
 	 * @param pad string to use as padding
 	 * 
 	 * @return padded string
 	 */
-	protected static String padText(String str, int length, String pad) {
+	protected static String padText(String str, int minSize, String pad) {
 
-		if((length - str.length()) > 0)		return padText(pad + str, length, pad);
+		if((minSize - str.length()) > 0)		return padText(pad + str, minSize, pad);
 		return str;
 	}
 	
