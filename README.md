@@ -14,7 +14,7 @@ Cipher software.
 - random step size for each rotor
 - random direction rotor rotation
 - same passphrase & recipient handle can be used for all messages
-- random seed generation, Crypto Mk II will never encrypt a message using the same settings
+- random seed generation, Crypto will never encrypt a message using the same settings
 - ability to randomize word directory for increased security
 
 ## Usage
@@ -49,4 +49,7 @@ https://en.wikipedia.org/wiki/Enigma_rotor_details
 https://en.wikipedia.org/wiki/Fialka  
 http://www.cryptomuseum.com/crypto/enigma/working.htm  
 https://en.wikipedia.org/wiki/SIGABA
+
+## TODO (?? Maybe)
+Rotor/Pb size (mem space) can be significantly reduced (< 5% of current, O(log n) vs O(n^2)) by only storing values used during encryption/decryption, unfortunately this will be difficult to follow by a layman, this will be implemented (???) in a latter version with an extensive comment section explaining how the software works. Current design closely follows physical crypto machines in both form and function.
 
