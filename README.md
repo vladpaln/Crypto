@@ -1,5 +1,5 @@
 # Crypto
-Cipher software.  
+Cipher software, known weaknesses have been removed.  
   
 ![Alt text](/scr2.png?raw=true "Crypto")  
   
