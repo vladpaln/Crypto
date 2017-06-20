@@ -5,7 +5,6 @@
  */
 package com.navaile.enigma4k;
 
-import com.navaile.junitreflect.ClassParser;
 import com.zackehh.siphash.SipHash;
 import com.zackehh.siphash.SipHashCase;
 import com.zackehh.siphash.SipHashResult;
@@ -25,38 +24,14 @@ import org.apache.commons.lang3.text.StrBuilder;
 import org.apache.log4j.*;
 
 /**
- * 
+ * Misc test class.
  * 
  * 
  * @author navaile
  */
-public class Test extends ClassParser<NewClass> {
+public class Test {
 
-	NewClass inst = new NewClass();
-
-	public Test() {
-
-		setInstance(inst);
-
-		try {
-
-			System.out.println(	"STAT_FINAL: " + getField(String.class, "STAT_FINAL")				);
-			System.out.println(	"FIN: " + getField(String.class, "FIN")								);
-			System.out.println(	"INST_VAR: " + getField(String.class, "INST_VAR")					);
-			System.out.println( "--------------------------------------------");
-
-			try {	setField("INST_VAR", "AAA");						} catch(Exception e) {}
-			try {	setField("FIN", "FIN_BBB");							} catch(Exception e) {}
-			try {	setField("STAT_FINAL", "new static final field");	} catch(Exception e) {}
-			
-			System.out.println(	"STAT_FINAL: " + getField(String.class, "STAT_FINAL")				);
-			System.out.println(	"FIN: " + getField(String.class, "FIN")								);
-			System.out.println(	"INST_VAR: " + getField(String.class, "INST_VAR")					);
-			
-			System.out.println(		T_method_args(String.class, "methTest", "this is a test")		);
-
-		} catch(Exception e) {		e.printStackTrace();					}
-	}
+	public Test() {}
 
 	/**
 	 * @param args the command line arguments

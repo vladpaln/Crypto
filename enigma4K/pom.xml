@@ -12,14 +12,11 @@
     </properties>
 	
     <dependencies>
-
-		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.5</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>com.zackehh</groupId>
 			<artifactId>siphash</artifactId>
@@ -40,6 +37,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>JUnitReflect</artifactId>
             <version>${project.version}</version>
+			<scope>test</scope>
         </dependency>
     </dependencies>
 	
