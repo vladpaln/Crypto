@@ -79,7 +79,7 @@ public class Directory {
 	/**
 	 * Preprocess text, replace some punctuation with word equivalent.
 	 * 
-	 * @param plainText
+	 * @param plainText text to preprocess
 	 * @return text with replaced punctuation
 	 */
 	private String preprocess(String plainText) {
@@ -228,8 +228,7 @@ public class Directory {
 			wordArr = arrList.toArray(new String[arrList.size()]);
 			Arrays.sort(wordArr);
 			ordered = true;
-		}
-		catch(Exception e) {	LOG.error("Error loading directory", e);	}
+		} catch(Exception e) {	LOG.error("Error loading directory", e);	}
 	}
 	
 	/**
@@ -268,8 +267,7 @@ public class Directory {
 					if(line.length() != 0)		wordSet.add(line.toLowerCase());
 					if(wordSet.size() >= (Crypt.DIR_SIZE - 50))	break;
 				}
-			}
-			catch(Exception ex) {	LOG.error("Builds Directory", ex);	}
+			} catch(Exception ex) {	LOG.error("Builds Directory", ex);	}
 		}
 		
 		// directory
@@ -327,9 +325,8 @@ public class Directory {
 				pw.println("]");
 				pw.println("{");
 				pw.println("}");
-			}
-			catch(IOException e) {	LOG.error("Write Directory to File", e);	}
-		}
-		catch(Exception e) {	LOG.error("Unable to access file.", e);	}
+			} catch(IOException e) {	LOG.error("Write Directory to File", e);	}
+			
+		} catch(Exception e) {	LOG.error("Unable to access file.", e);	}
 	}
 }

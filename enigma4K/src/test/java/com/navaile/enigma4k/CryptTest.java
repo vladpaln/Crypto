@@ -5,9 +5,14 @@
  */
 package com.navaile.enigma4k;
 
-import java.util.Random;
+import com.navaile.junitreflect.ClassParser;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.*;
+import java.util.*;
 import org.junit.Assert;
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -15,7 +20,9 @@ import org.junit.Test;
  *
  * @author navaile
  */
-public class CryptTest extends Crypt {
+public class CryptTest extends ClassParser<Crypt> {
+	
+	private static int DIR_SIZE;			// ZZZ (base36)
 	
 	private static final String PASS = "passPhrase";
 	private static final String HANDLE = "handle";
@@ -27,48 +34,67 @@ public class CryptTest extends Crypt {
 	
 	private static final Random RND = new Random();
 	
-	public CryptTest() {
-		super(PASS, HANDLE, MSG_ID, RO_COUNT, PB_COUNT, true);
-	}
+	private static final Crypt inst = new Crypt(PASS, HANDLE, MSG_ID, RO_COUNT, PB_COUNT, true);
 	
+	@BeforeClass
+	public static void ini() {}
+	
+	@Before
+	public void reset() {
+		
+		setInstance(inst);
+
+		try {
+			DIR_SIZE = getField(Integer.class, "DIR_SIZE");
+			System.out.println("DIR_SIZE: " + DIR_SIZE);
+//			setField("DIR_SIZE", DIR_SIZE + 10);
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+//		DIR_SIZE = 46_655;
+		
+		// @Before called before every @Test method
+		// used to reset fields
+	}
+
 	@Test
 	public void cryptTest() {
-		
-		try {
-			final String cryptText = Crypt.encryptText(PASS, HANDLE, RO_COUNT,
-					PB_COUNT, null, MSG);
-			final String text = Crypt.decryptText(PASS, HANDLE, RO_COUNT,
-					PB_COUNT, null, cryptText);
-			
-			Assert.assertEquals("Encrypt/decrypt cycle failed, plainText: " +
-				MSG + ", cryptText: " + cryptText + ", decryptText: " +
-				text, MSG.toLowerCase(), text.toLowerCase());
-		}
-		catch(Exception ex) {	ex.printStackTrace();					}
+
+		final String cryptText = Crypt.encryptText(PASS, HANDLE, RO_COUNT,
+				PB_COUNT, null, MSG);
+		final String text = Crypt.decryptText(PASS, HANDLE, RO_COUNT,
+				PB_COUNT, null, cryptText);
+
+		Assert.assertEquals("Encrypt/decrypt cycle failed, plainText: " +
+			MSG + ", cryptText: " + cryptText + ", decryptText: " +
+			text, MSG.toLowerCase(), text.toLowerCase());
 	}
 	
 	@Test
-	public void setCountTest() {
+	public void setCountTest() throws IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
 
 		int min = 0, max = 1000, num = 500;
-		
-		int val = this.setCount(RND, num, min, max);
+
+		int val = T_method_args(Integer.class, "setCount", RND, num, min, max);
 		assertTrue("Value outside bounds, min/max/val: " + min + "/" + max + "/" + val,
 			val >= min && val <= max && val < num);
-		
+
 		num = -5;
-		val = this.setCount(RND, num, min, max);
+		val = T_method_args(Integer.class, "setCount", RND, num, min, max);
 		assertTrue("Min bound failed, min/val: " + min + "/" + val, val == min);
-		
+
 		num = 1250;
-		val = this.setCount(RND, num, min, max);
+		val = T_method_args(Integer.class, "setCount", RND, num, min, max);
 		assertTrue("Max bound failed, max/val: " + max + "/" + val, val <= max);
 	}
 	
 	@Test
-	public void iniMatrixTest() {
-		
-		final int[][] matrix = this.iniMatrix(RND, RO_COUNT, DIR_SIZE, true);
+	public void iniMatrixTest() throws IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
+
+		final int[][] matrix = T_method_args(int[][].class, "iniMatrix", RND, RO_COUNT, DIR_SIZE, true);
 		assertTrue("Incorrect count, exp: " + RO_COUNT + ", act: " + matrix.length,
 			matrix.length == RO_COUNT);
 		assertTrue("Incorrect directory size: " + matrix[0].length, matrix[0].length == DIR_SIZE);
@@ -80,39 +106,42 @@ public class CryptTest extends Crypt {
 	}
 	
 	@Test
-	public void roSpinTest() {
-		final int[] roSpin = this.roSpin(RND, RO_COUNT);
+	public void roSpinTest() throws IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
+
+		final int[] roSpin = T_method_args(int[].class, "roSpin", RND, RO_COUNT);
 		for(int i: roSpin)
 			if(Math.abs(i) != 1)	fail("Spin must be 1 or -1, act: " + i);
 	}
 	
 	@Test
-	public void stepRotorsTest() {
+	public void stepRotorsTest() throws IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
 		
 		final Random r = new Random(0);
-		
+
 		int[] rotorInd = {120, 132, 141, 137, 146};
 		int[] spin = {1, -1, -1, 1, 1};
 		int dirSize = 250;
-		
-		this.stepRotors(r, rotorInd, spin, dirSize);
+
+		method_args("stepRotors", r, rotorInd, spin, dirSize);
 		assertArrayEquals("Step failed.", rotorInd, new int[] {122, 130, 121, 148, 159});
-		
+
 		rotorInd = new int[] {249, 0, 249, 0, 249};
-		this.stepRotors(r, rotorInd, spin, dirSize);
+		method_args("stepRotors", r, rotorInd, spin, dirSize);
 		assertArrayEquals("Step over bounds failed.", rotorInd, new int[] {6, 249, 244, 7, 14});
 	}
 
 	@Test
-	public void padTextTest() {
-		assertTrue("Pad size failed.", Crypt.padText("test", 13, "X").length() == 13);
+	public void padTextTest() throws IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
+		
+		assertTrue("Pad size failed.", (T_method_args(String.class, "padText", "test", 13, "X")).length() == 13);
 		assertTrue("Pad string equals failed.",
-			Crypt.padText("test", 13, "X").equalsIgnoreCase("XXXXXXXXXtest"));
-		assertTrue("Pad minSize failed.", Crypt.padText("test", 2, "X").length() == 4);
+			(T_method_args(String.class, "padText", "test", 13, "X")).equalsIgnoreCase("XXXXXXXXXtest"));
+		assertTrue("Pad minSize failed.", (T_method_args(String.class, "padText", "test", 2, "X")).length() == 4);
 	}
 
 	@Test
-	public void emptyTest() {
-		
-	}
+	public void emptyTest() {}
 }

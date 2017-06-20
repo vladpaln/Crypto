@@ -5,9 +5,12 @@
  */
 package com.navaile.enigma4k;
 
+import com.navaile.junitreflect.ClassParser;
 import com.zackehh.siphash.SipHash;
 import com.zackehh.siphash.SipHashCase;
 import com.zackehh.siphash.SipHashResult;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,20 +25,49 @@ import org.apache.commons.lang3.text.StrBuilder;
 import org.apache.log4j.*;
 
 /**
- *
- * @author vladpaln
+ * 
+ * 
+ * 
+ * @author navaile
  */
-public class Test {
-	
-	private static final Logger LOG = Logger.getLogger(Test.class);
+public class Test extends ClassParser<NewClass> {
+
+	NewClass inst = new NewClass();
+
+	public Test() {
+
+		setInstance(inst);
+
+		try {
+
+			System.out.println(	"STAT_FINAL: " + getField(String.class, "STAT_FINAL")				);
+			System.out.println(	"FIN: " + getField(String.class, "FIN")								);
+			System.out.println(	"INST_VAR: " + getField(String.class, "INST_VAR")					);
+			System.out.println( "--------------------------------------------");
+
+			try {	setField("INST_VAR", "AAA");						} catch(Exception e) {}
+			try {	setField("FIN", "FIN_BBB");							} catch(Exception e) {}
+			try {	setField("STAT_FINAL", "new static final field");	} catch(Exception e) {}
+			
+			System.out.println(	"STAT_FINAL: " + getField(String.class, "STAT_FINAL")				);
+			System.out.println(	"FIN: " + getField(String.class, "FIN")								);
+			System.out.println(	"INST_VAR: " + getField(String.class, "INST_VAR")					);
+			
+			System.out.println(		T_method_args(String.class, "methTest", "this is a test")		);
+
+		} catch(Exception e) {		e.printStackTrace();					}
+	}
 
 	/**
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
 		
-		BasicConfigurator.configure();
-		Logger.getRootLogger().setLevel(Level.ERROR);
+//		BasicConfigurator.configure();
+//		Logger.getRootLogger().setLevel(Level.ERROR);
+		
+//		System.out.println("this is a test");
+		new Test();
 		
 //		ArrayList<String> rotorList = new ArrayList<>();
 //		
@@ -108,7 +140,7 @@ public class Test {
 //		System.out.println(Arrays.toString(RotorPb.genRotorPb(99999)));
 //		System.out.println(Arrays.toString(RotorPb.genRotorPb(123456)));
 
-		LOG.debug("Logger Debug Test");
+//		LOG.debug("Logger Debug Test");
 		
 		/**
 		 * pass phrase => phraseSeed(long)
@@ -250,9 +282,9 @@ public class Test {
 //		System.out.format("NegFlip: %d => %d%n", Integer.MIN_VALUE, (Integer.MIN_VALUE * -1));
 //		System.out.format("PosFlip: %d => %d%n", Integer.MAX_VALUE, (Integer.MAX_VALUE * -1));
 
-		System.out.println(
-			"this is a test".contains(" ")
-		);
+//		System.out.println(
+//			"this is a test".contains(" ")
+//		);
 	}
 	
 	public static List<Integer> primeFactors(int number) {
