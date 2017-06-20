@@ -5,9 +5,8 @@
  */
 package com.navaile.enigma4k;
 
-import com.navaile.junitreflect.ClassParser;
+import com.navaile.junitreflect.*;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.*;
 import java.util.*;
 import org.junit.Assert;
 import static org.junit.Assert.*;
