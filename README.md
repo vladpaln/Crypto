@@ -1,7 +1,7 @@
 # Crypto
 Cipher software, known weaknesses have been removed.  
   
-![Alt text](/scr2.png?raw=true "Crypto")  
+![Alt text](/scr.png?raw=true "Crypto")  
   
 ## Features
 - word encoding instead of letter encoding
