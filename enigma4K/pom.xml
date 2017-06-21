@@ -33,19 +33,12 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
-		<!--
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>JUnitReflect</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-		-->
-		<dependency>
-			<groupId>com.navaile</groupId>
-			<artifactId>JUnitReflect</artifactId>
+			<!-- <version>${project.version}</version> -->
 			<version>1.0</version>
-			<scope>test</scope>
+			<!-- <scope>test</scope> -->
 		</dependency>
     </dependencies>
 	
