@@ -45,7 +45,7 @@ public class CryptTest extends ClassParser<Crypt> {
 
 		try {
 			DIR_SIZE = getField(Integer.class, "DIR_SIZE");
-			System.out.println("DIR_SIZE: " + DIR_SIZE);
+//			System.out.println("DIR_SIZE: " + DIR_SIZE);
 //			setField("DIR_SIZE", DIR_SIZE + 10);
 			
 		} catch(Exception e) {

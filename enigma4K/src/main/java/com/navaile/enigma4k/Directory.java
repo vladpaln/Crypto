@@ -8,7 +8,7 @@ package com.navaile.enigma4k;
 import java.io.*;
 import java.util.*;
 import org.apache.commons.lang3.text.StrBuilder;
-import org.apache.log4j.*;
+import org.slf4j.*;
 
 /**
  * Loads a word directory of the 45K most frequent words in the english language.
@@ -23,7 +23,7 @@ import org.apache.log4j.*;
  */
 public class Directory {
 	
-	private static final Logger LOG = Logger.getLogger(Directory.class);
+	private static final Logger LOG = LoggerFactory.getLogger(Directory.class);
 	
 	/**
 	 * resources class loading
@@ -55,8 +55,8 @@ public class Directory {
 	
 	/** Running this will build a new original directory file.	*/
 	public static void main(String[] args) {
-		BasicConfigurator.configure();
-		Logger.getRootLogger().setLevel(Level.ERROR);
+//		BasicConfigurator.configure();
+//		Logger.getRootLogger().setLevel(Level.ERROR);
 		
 		buildDirectory();
 	}

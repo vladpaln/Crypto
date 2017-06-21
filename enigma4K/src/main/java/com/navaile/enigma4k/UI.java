@@ -8,7 +8,7 @@ package com.navaile.enigma4k;
 import java.net.URL;
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
-import org.apache.log4j.*;
+import org.slf4j.*;
 
 /**
  * Enigma4K GUI
@@ -17,7 +17,7 @@ import org.apache.log4j.*;
  */
 public class UI extends javax.swing.JFrame {
 	
-	private static final Logger LOG = Logger.getLogger(UI.class);
+	private static final Logger LOG = LoggerFactory.getLogger(UI.class);
 
 	/** Creates new form EnigmaGUI			*/
 	private UI() {
@@ -329,15 +329,15 @@ public class UI extends javax.swing.JFrame {
 
 		if(roCountText.length() != 0)
 			try {	roCount = Integer.parseInt(roCountText);					}
-			catch(Exception e) {	LOG.fatal("Parse Rotor Count", e);			}
+			catch(Exception e) {	LOG.error("Parse Rotor Count", e);			}
 		
 		if(pbCountText.length() != 0)
 			try {	pbCount = Integer.parseInt(pbCountText);					}
-			catch(Exception e) {	LOG.fatal("Parse Plugboard Count", e);		}
+			catch(Exception e) {	LOG.error("Parse Plugboard Count", e);		}
 		
 		if(dirSeedText.length() != 0 && dirSeedText.matches("[0-9]+"))	
 			try {	dirSeed = Long.parseLong(dirSeedText);						}
-			catch(Exception e) {	LOG.fatal("Parse Directory Seed", e);		}
+			catch(Exception e) {	LOG.error("Parse Directory Seed", e);		}
 
 		textField.setText(Crypt.encryptText(passPhrase, handle, roCount,
 			pbCount, dirSeed, textField.getText()));
@@ -356,15 +356,15 @@ public class UI extends javax.swing.JFrame {
 
 		if(roCountText.length() != 0)
 			try {	roCount = Integer.parseInt(roCountText);					}
-			catch(Exception e) {	LOG.fatal("Parse Rotor Count", e);			}
+			catch(Exception e) {	LOG.error("Parse Rotor Count", e);			}
 		
 		if(pbCountText.length() != 0)
 			try {	pbCount = Integer.parseInt(pbCountText);					}
-			catch(Exception e) {	LOG.fatal("Parse Plugboard Count", e);		}
+			catch(Exception e) {	LOG.error("Parse Plugboard Count", e);		}
 		
 		if(dirSeedText.length() != 0 && dirSeedText.matches("[0-9]+"))	
 			try {	dirSeed = Long.parseLong(dirSeedText);						}
-			catch(Exception e) {	LOG.fatal("Parse Directory Seed", e);		}
+			catch(Exception e) {	LOG.error("Parse Directory Seed", e);		}
 
 		textField.setText(Crypt.decryptText(passPhrase, handle, roCount,
 			pbCount, dirSeed, textField.getText()));
@@ -420,14 +420,14 @@ public class UI extends javax.swing.JFrame {
 	/** @param args the command line arguments		*/
 	public static void main(String args[]) {
 		
-		BasicConfigurator.configure();
-		Logger.getRootLogger().setLevel(Level.ERROR);
+//		BasicConfigurator.configure();
+//		Logger.getRootLogger().setLevel(Level.ERROR);
 
 		//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
-		catch(Exception e) {	LOG.fatal("Unable to set Look and Feel", e);	}
+		catch(Exception e) {	LOG.error("Unable to set Look and Feel", e);	}
 		//</editor-fold>
 
 		/* Create and display the form */

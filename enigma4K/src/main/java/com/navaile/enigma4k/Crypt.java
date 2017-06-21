@@ -8,7 +8,7 @@ package com.navaile.enigma4k;
 import com.zackehh.siphash.*;
 import java.text.NumberFormat;
 import java.util.*;
-import org.apache.log4j.*;
+import org.slf4j.*;
 
 /**
  * Crypt based on the Enigma/Fialka/SIGABA, attempts have been made to
@@ -39,7 +39,7 @@ import org.apache.log4j.*;
  */
 public class Crypt {
 	
-	private static final Logger LOG = Logger.getLogger(Crypt.class);
+	private static final Logger LOG = LoggerFactory.getLogger(Crypt.class);
 	
 	public static final String VER = "3.4";
 
