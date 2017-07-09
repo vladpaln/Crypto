@@ -1,0 +1,16 @@
+TODO
+
+mem space reduction
+	Crypto needs to know word count before Crypto ini build
+	- lines need to parced and words counted
+	- using the word counts plugboard counts can be initiated (see below)
+	
+security upgrade
+	- plugboard count can be reduced to ~ somewhat > word count, plugboardcount(permutaitons) security will increase as they will vary in size based on msg size
+
+notes: currently there is not way of reducing the rotor size
+
+
+TODO (?? Maybe)
+Rotor/Pb size (mem space) can be significantly reduced (< 5% of current, O(n) vs O(n^2)) by only storing values used during encryption/decryption, unfortunately this will be difficult to follow by a layman, this will be implemented (??? Maybe) in a latter version with an extensive comment section explaining how the software works. Current design closely follows physical crypto machines in both form and function. Current memory usage is incredibly inefficient!!!!
+notes: only pb can be reduced, rotor size must maintain entire set of values
