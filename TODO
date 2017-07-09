@@ -4,6 +4,7 @@ mem space reduction
 	Crypto needs to know word count before Crypto ini build
 	- lines need to parced and words counted
 	- using the word counts plugboard counts can be initiated (see below)
+	- remove pb count from UI (comment out, dont remove)
 	
 security upgrade
 	- plugboard count can be reduced to ~ somewhat > word count, plugboardcount(permutaitons) security will increase
