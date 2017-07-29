@@ -1,5 +1,7 @@
 TODO
 
+refactor directory class
+
 mem space reduction
 	Crypto needs to know word count before Crypto ini build
 	- lines need to parced and words counted
