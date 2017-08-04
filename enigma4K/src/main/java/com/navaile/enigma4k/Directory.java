@@ -34,6 +34,7 @@ public class Directory {
 	 * access from instance:		directory
 	 *		getClass().getClassLoader().getResourceAsStream("directory")
 	 * 
+	 * 
 	 */
 	
 	/**

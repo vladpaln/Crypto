@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="8" failures="0" name="com.navaile.enigma4k.CryptTest" time="0.781" errors="0" skipped="0">
+<testsuite tests="8" failures="0" name="com.navaile.enigma4k.CryptTest" time="0.819" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_40\jre\bin"/>
     <property name="java.vm.version" value="25.40-b25"/>
     <property name="java.vm.vendor" value="Oracle Corporation"/>
-    <property name="maven.multiModuleProjectDirectory" value="E:\NetBeansProjects\Crypto\enigma4K"/>
+    <property name="maven.multiModuleProjectDirectory" value="F:\NetBeansProjects\Crypto\enigma4K"/>
     <property name="java.vendor.url" value="http://java.oracle.com/"/>
     <property name="path.separator" value=";"/>
     <property name="guice.disable.misplaced.annotation.check" value="true"/>
@@ -16,7 +16,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.os.patch.level" value=""/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="user.dir" value="E:\NetBeansProjects\Crypto\enigma4K"/>
+    <property name="user.dir" value="F:\NetBeansProjects\Crypto\enigma4K"/>
     <property name="java.runtime.version" value="1.8.0_40-b26"/>
     <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
     <property name="java.endorsed.dirs" value="C:\Program Files\Java\jdk1.8.0_40\jre\lib\endorsed"/>
@@ -30,7 +30,7 @@
     <property name="maven.ext.class.path" value="C:\Program Files\NetBeans 8.2\java\maven-nblib\netbeans-eventspy.jar"/>
     <property name="classworlds.conf" value="C:\Users\vladpaln\Desktop\apache-maven-3.3.9\bin\m2.conf"/>
     <property name="sun.jnu.encoding" value="Cp1252"/>
-    <property name="java.library.path" value="C:\Program Files\Java\jdk1.8.0_40\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Program Files\Microsoft HPC Pack 2008 R2\Bin\;C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\Lenovo\FusionEngine;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Program Files (x86)\Common Files\lenovo\easyplussdk\bin;C:\Program Files (x86)\Lenovo\Motion Control\;C:\Program Files (x86)\MySQL\MySQL Fabric 1.5.4 &amp; MySQL Utilities 1.5.4 1.5\;C:\Program Files (x86)\MySQL\MySQL Fabric 1.5.4 &amp; MySQL Utilities 1.5.4 1.5\Doctrine extensions for PHP\;C:\SIMULIA\Abaqus\Commands;C:\Program Files\nodejs\;C:\Program Files (x86)\Graphviz2.38\bin;C:\Users\vladpaln\Desktop\apache-maven-3.3.9\bin;C:\Users\vladpaln\AppData\Roaming;C:\Users\vladpaln\AppData\Local\Microsoft\WindowsApps;C:\Program Files (x86)\Nmap;."/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk1.8.0_40\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Program Files\Microsoft HPC Pack 2008 R2\Bin\;C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\Lenovo\FusionEngine;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Program Files (x86)\Common Files\lenovo\easyplussdk\bin;C:\Program Files (x86)\Lenovo\Motion Control\;C:\Program Files (x86)\MySQL\MySQL Fabric 1.5.4 &amp; MySQL Utilities 1.5.4 1.5\;C:\Program Files (x86)\MySQL\MySQL Fabric 1.5.4 &amp; MySQL Utilities 1.5.4 1.5\Doctrine extensions for PHP\;C:\SIMULIA\Abaqus\Commands;C:\Program Files\nodejs\;C:\Program Files (x86)\Graphviz2.38\bin;C:\Users\vladpaln\Desktop\apache-maven-3.3.9\bin;C:\Users\vladpaln\AppData\Roaming;C:\Users\vladpaln\AppData\Local\Microsoft\WindowsApps;C:\Program Files (x86)\Nmap;;."/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.class.version" value="52.0"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
@@ -63,12 +63,12 @@
     <property name="sun.desktop" value="windows"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase classname="com.navaile.enigma4k.CryptTest" name="roSpinTest" time="0"/>
+  <testcase classname="com.navaile.enigma4k.CryptTest" name="roSpinTest" time="0.005"/>
   <testcase classname="com.navaile.enigma4k.CryptTest" name="emptyTest" time="0"/>
   <testcase classname="com.navaile.enigma4k.CryptTest" name="setCountTest" time="0"/>
   <testcase classname="com.navaile.enigma4k.CryptTest" name="genMsgIDTest" time="0"/>
   <testcase classname="com.navaile.enigma4k.CryptTest" name="stepRotorsTest" time="0"/>
-  <testcase classname="com.navaile.enigma4k.CryptTest" name="iniMatrixTest" time="0.172"/>
-  <testcase classname="com.navaile.enigma4k.CryptTest" name="cryptTest" time="0.609"/>
+  <testcase classname="com.navaile.enigma4k.CryptTest" name="iniMatrixTest" time="0.235"/>
+  <testcase classname="com.navaile.enigma4k.CryptTest" name="cryptTest" time="0.579"/>
   <testcase classname="com.navaile.enigma4k.CryptTest" name="padTextTest" time="0"/>
 </testsuite>

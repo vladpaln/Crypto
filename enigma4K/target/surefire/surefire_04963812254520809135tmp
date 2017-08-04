@@ -1,8 +1,0 @@
-#surefire_0
-#Fri Jun 09 14:13:09 PDT 2017
-maven.ext.class.path=C\:\\Program Files\\NetBeans 8.2\\java\\maven-nblib\\netbeans-eventspy.jar
-file.encoding=UTF-8
-test=com.navaile.enigma4k.CryptTest
-basedir=E\:\\NetBeansProjects\\enigma4K
-user.dir=E\:\\NetBeansProjects\\enigma4K
-localRepository=C\:\\Users\\vladpaln\\.m2\\repository
