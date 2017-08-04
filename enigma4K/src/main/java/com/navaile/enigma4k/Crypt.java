@@ -468,8 +468,8 @@ public class Crypt {
 				word = word.replace("\\s.", ".");
 				log.append("direcWord: ").append(word);
 
-			if(word.equals("<%"))	wSpace = false;
-			if(word.equals("%>"))	wSpace = true;
+			if("<%".equals(word))	wSpace = false;
+			if("%>".equals(word))	wSpace = true;
 
 			text.append(word.replace("<%", "").replace("%>", ""));
 			if(wSpace)	text.append(" ");
