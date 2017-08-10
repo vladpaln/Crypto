@@ -35,7 +35,7 @@ import org.slf4j.*;
  * 
  * TODO optimize/refactor
  *
- * @author navaile
+ * @author vladpaln
  */
 public class Crypt {
 	
@@ -60,6 +60,8 @@ public class Crypt {
 	private static final String HASH_KEY = "navaile_Enigma4K";
 	
 	private final Random RND;
+	
+	/** Word directory.		*/
 	private static final Directory DIRECT = Directory.getInstance();
 	
 	private final int[][] roMatrix;
@@ -67,6 +69,8 @@ public class Crypt {
 	
 	/** Rotor Key		*/			private final int[] roKey;
 	/** Index for each rotor */		private final int[] roIndex;
+	
+	// TODO use BitSet flags instead
 	/** Rotor direction spin */		private final int[] roSpin;
 	
 	/**
@@ -85,7 +89,7 @@ public class Crypt {
 		LOG.info("ini Crypt()");
 		LOG.info("passPhrase: " + passPhrase + ", handle: " + handle + ", msgID: " + msgID);
 
-		if(msgID == null)	msgID = "";
+		if(msgID == null) {	msgID = "";		}
 		passPhrase = String.join(passPhrase, handle, msgID, "!@#$%^&*()");
 		RND = new Random(cryptHash(passPhrase));
 		
@@ -141,17 +145,17 @@ public class Crypt {
 		
 		int[][] matrix = new int[count][];
 		for(int i = 0; i < matrix.length; i++) {
-			if(encrypt)		matrix[i] = genRotorPb(rnd, DIR_SIZE);
-			else			matrix[i] = invArr(genRotorPb(rnd, DIR_SIZE));
+			if(encrypt)	{	matrix[i] = genRotorPb(rnd, DIR_SIZE);			}
+			else {			matrix[i] = invArr(genRotorPb(rnd, DIR_SIZE));	}
 		}
 		
 		return matrix;
 	}
 	
 	/**
-	 * Generate message id.
+	 * Generates message id based on GMT time stamp in string form.
 	 * 
-	 * @return message id
+	 * @return string message id
 	 */
 	public static String genMsgID() {
 		
@@ -177,9 +181,12 @@ public class Crypt {
 	 */
 	private int[] roSpin(Random rnd, int roCount) {
 		
+		// TODO add roKey dependency to method params
+		
 		int[] spin = new int[roKey.length];
-		for(int i = 0; i < spin.length; i++)
+		for(int i = 0; i < spin.length; i++) {
 			spin[i] = (rnd.nextBoolean() ? 1 : -1);
+		}
 		
 		return spin;
 	}
@@ -194,13 +201,17 @@ public class Crypt {
 	 */
 	private void stepRotors(Random rnd, int[] rotorIndex, int[] roSpin, int DIR_SIZE) {
 		
-		// TODO implement this
+		// TODO implementing this will change rotor spin direction randomly.
 //		if(rnd.nextDouble() > .9955)		roSpin(rnd, roCount);
 
 		for(int i = 0; i < rotorIndex.length; i++) {
 			rotorIndex[i] += rnd.nextInt(31) * roSpin[i];
-			if(rotorIndex[i] >= DIR_SIZE) rotorIndex[i] = rotorIndex[i] % DIR_SIZE;
-			else if(rotorIndex[i] < 0) rotorIndex[i] = DIR_SIZE + rotorIndex[i];
+			if(rotorIndex[i] >= DIR_SIZE) {
+				rotorIndex[i] = rotorIndex[i] % DIR_SIZE;
+			}
+			else if(rotorIndex[i] < 0) {
+				rotorIndex[i] = DIR_SIZE + rotorIndex[i];
+			}
 		}
 		
 		LOG.info("stepRotors() new rotor settings: " + Arrays.toString(rotorIndex));
@@ -219,8 +230,9 @@ public class Crypt {
 		LOG.info("Crypt.genKey() Generates random rotor key.");
 		
 		final int[] newKey = new int[roCount];
-		for (int i = 0; i < newKey.length; i++)
+		for (int i = 0; i < newKey.length; i++) {
 			newKey[i] = rnd.nextInt(DIR_SIZE);
+		}
 
 		return newKey;
 	}
@@ -235,7 +247,7 @@ public class Crypt {
 	private int[] rndOrder(Random rnd, int roKeySize) {			
 	
 		final int[] newOrder = new int[roKeySize];
-		for(int i = 0; i < newOrder.length; i++)	newOrder[i] = i;
+		for(int i = 0; i < newOrder.length; i++) {	newOrder[i] = i;		}
 		
 		Util.shuffle(rnd, newOrder);
 		return newOrder;
@@ -416,8 +428,11 @@ public class Crypt {
 		
 		LOG.info("Crypt.decryptText()");
 		
-		if(cryptText.length() < 12 || cryptText.length() % 3 != 0 || cryptText.contains(" "))
-			return cryptText;
+		if(	cryptText.length() < 12 ||
+			cryptText.length() % 3 != 0 ||
+			cryptText.contains(" ")	) {
+				return cryptText;
+		}
 		
 		final String msgID = cryptText.substring(0, 9);
 		cryptText = cryptText.substring(9, cryptText.length());
@@ -438,7 +453,7 @@ public class Crypt {
 		
 		LOG.info("Crypt.decryptText()");
 		
-		if(cryptText.length() % 3 != 0)		return cryptText;
+		if(cryptText.length() % 3 != 0) {	return cryptText;				}
 		
 		StringBuilder log;
 
@@ -454,7 +469,7 @@ public class Crypt {
 			int wordCode = base36ToInt(wordCodeStr);
 				log.append("base36ToInt: ").append(wordCode).append(", ");
 
-			int index = RND.nextInt(pbMatrix.length);
+			final int index = RND.nextInt(pbMatrix.length);
 			wordCode = pbCrypt(wordCode, index, pbMatrix);
 				log.append("pbD:").append(wordCode).append(", ");
 			wordCode = roCrypt(RND, roMatrix, roIndex, wordCode, false, DIR_SIZE);
@@ -468,11 +483,11 @@ public class Crypt {
 				word = word.replace("\\s.", ".");
 				log.append("direcWord: ").append(word);
 
-			if("<%".equals(word))	wSpace = false;
-			if("%>".equals(word))	wSpace = true;
+			if("<%".equals(word)) {	wSpace = false;						}
+			if("%>".equals(word)) { wSpace = true;						}
 
 			text.append(word.replace("<%", "").replace("%>", ""));
-			if(wSpace)	text.append(" ");
+			if(wSpace) {	text.append(" ");							}
 
 			LOG.debug(log.toString());
 		}
@@ -532,7 +547,10 @@ public class Crypt {
 	 */
 	private static String padText(String str, int minSize, String pad) {
 
-		if((minSize - str.length()) > 0)		return padText(pad + str, minSize, pad);
+		if((minSize - str.length()) > 0) {
+			return padText(pad + str, minSize, pad);
+		}
+
 		return str;
 	}
 	
@@ -568,7 +586,7 @@ public class Crypt {
 	private static int[] genRotorPb(Random rnd, int DIR_SIZE) {
 
 		int[] arr = new int[DIR_SIZE];			// 46655, ZZZ
-		for(int i = 0; i < arr.length; i++)		arr[i] = i;
+		for(int i = 0; i < arr.length; i++) {	arr[i] = i;					}
 		
 		Util.shuffle(rnd, arr);
 		return arr;
@@ -601,23 +619,21 @@ public class Crypt {
 	 * @param seed random directory seed
 	 */
 	public void randomizeDirectory(Long seed) {
-		if(DIRECT != null)	DIRECT.randomizeDirectory(seed);
+		if(DIRECT != null) {	DIRECT.randomizeDirectory(seed);			}
 	}
 	
-	/** 
-	 * Memory usage.
-	 */
+	/** Memory usage.		*/
 	private static void memory() {
 		
-		long MEGABYTE = 1024L * 1024L;
+		final long MEGABYTE = 1024L * 1024L;
 
 		Runtime runtime = Runtime.getRuntime();
 		NumberFormat format = NumberFormat.getInstance();
 
-		StringBuilder sb = new StringBuilder();
-		long maxMemory = runtime.maxMemory();
-		long allocatedMemory = runtime.totalMemory();
-		long freeMemory = runtime.freeMemory();
+		final StringBuilder sb = new StringBuilder();
+		final long maxMemory = runtime.maxMemory();
+		final long allocatedMemory = runtime.totalMemory();
+		final long freeMemory = runtime.freeMemory();
 
 		sb.append("free memory: ").append(format.format(freeMemory / MEGABYTE)).append("\n");
 		sb.append("allocated memory: ").append(format.format(allocatedMemory / MEGABYTE)).append("\n");

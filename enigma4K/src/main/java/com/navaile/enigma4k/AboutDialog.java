@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 /**
  * About dialog window.
  * 
- * @author navaile
+ * @author vladpaln
  */
 public class AboutDialog extends javax.swing.JDialog {
 	
@@ -42,8 +42,7 @@ public class AboutDialog extends javax.swing.JDialog {
 		"- actual rotor/plugboard count is randomly selected within 90% \u00B1 10% of provided value<br />" +
 		"- word directory can be randomized by providing a seed<br />";
 
-	/*		
-			
+	/*
 		"<b>How Crypto Works</b><br />" +
 		"Crypto encryption starts by first converting words into their numeric equivalent " +
 		"using a directory. Instead of encoding letters Crypto encodes entire words. Next " +

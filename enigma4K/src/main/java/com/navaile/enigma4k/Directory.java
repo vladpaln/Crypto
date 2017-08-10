@@ -19,7 +19,7 @@ import org.slf4j.*;
  * getInstance().randomizeDirectory(seed). Both parties must use the same
  * seed to insure same random directories for secure communications.
  *
- * @author navaile
+ * @author vladpaln
  */
 public class Directory {
 	
@@ -51,8 +51,8 @@ public class Directory {
 	
 	private static Directory dir;
 	
-	private boolean ordered = true;
-	private String[] wordArr;
+	private static boolean ordered = true;		// directory ordered flag
+	private static String[] wordArr;			// holds word directory
 	
 	/** Running this will build a new original directory file.	*/
 	public static void main(String[] args) {
@@ -73,7 +73,7 @@ public class Directory {
 	 */
 	public static Directory getInstance() {
 		
-		if(dir == null)		dir = new Directory();
+		if(dir == null) {	dir = new Directory();							}
 		return dir;
 	}
 	
@@ -87,7 +87,7 @@ public class Directory {
 		
 		LOG.info("Directory.preprocess()");
 
-		StrBuilder newMsg = new StrBuilder(plainText);
+		final StrBuilder newMsg = new StrBuilder(plainText);
 
 			newMsg
 			.replaceAll(System.getProperty("line.separator"), " ")
@@ -182,7 +182,7 @@ public class Directory {
 		LOG.info("Directory.getKeyCode()");
 		
 		/**
-		 * If the directory is ordered, binarySearch is used, its very fast,
+		 * If the directory is ordered, binarySearch is used, very fast,
 		 * if the directory has been randomized then a slower loop is used.
 		 */
 		
@@ -190,11 +190,12 @@ public class Directory {
 		
 		if(ordered) {
 			int i =  Arrays.binarySearch(wordArr, word);
-			if(i >= 0)		return i;
+			if(i >= 0) {	return i;										}
 		}
 		else {	// randomized directory
-			for(int i = 0; i < wordArr.length; i++)
-				if(wordArr[i].equals(word))		return i;
+			for(int i = 0; i < wordArr.length; i++) {
+				if(wordArr[i].equals(word)) {	return i;					}
+			}
 		}
 		
 		return null;
@@ -209,8 +210,10 @@ public class Directory {
 	public String getWord(Integer keyCode) {
 		
 		LOG.info("Directory.getWord()");
-		if(keyCode >= 0 && keyCode < wordArr.length)	return wordArr[keyCode];
-		else											return null;
+		if(keyCode >= 0 && keyCode < wordArr.length) {
+			return wordArr[keyCode];
+		}
+		else return null;
 	}
 	
 	/** Loads directory from resource.		*/
@@ -220,15 +223,20 @@ public class Directory {
 
 		final List<String> arrList = new ArrayList<>(Crypt.DIR_SIZE);
 		
-		InputStream is = getClass().getClassLoader().getResourceAsStream("directory");
-		try( BufferedReader br = new BufferedReader(new InputStreamReader(is)) ) {
+		final InputStream is = getClass().getClassLoader().getResourceAsStream("directory");
+		try( final BufferedReader br = new BufferedReader(new InputStreamReader(is)) ) {
 			
-			for(String word; (word = br.readLine()) != null; )
-				if(word.length() != 0)	arrList.add(word.toLowerCase().trim());
+			for(String word; (word = br.readLine()) != null; ) {
+
+				if(word.length() != 0) {
+					arrList.add(word.toLowerCase().trim());
+				}
+			}
 			
 			wordArr = arrList.toArray(new String[arrList.size()]);
 			Arrays.sort(wordArr);
 			ordered = true;
+
 		} catch(Exception e) {	LOG.error("Error loading directory", e);	}
 	}
 	
@@ -247,7 +255,7 @@ public class Directory {
 		ordered = seed == null;
 		Arrays.sort(wordArr);
 		
-		if(!ordered)	Util.shuffle(new Random(seed), wordArr);
+		if(!ordered) {	Util.shuffle(new Random(seed), wordArr);			}
 	}
 
 	/** Builds directory from word frequency lists.			*/
@@ -263,11 +271,18 @@ public class Directory {
 		
 		final Set<String> wordSet = new HashSet<>(Crypt.DIR_SIZE);
 		for(String p: fileList) {
-			try(BufferedReader br = new BufferedReader(new FileReader(p))) {
+
+			try(final BufferedReader br = new BufferedReader(new FileReader(p))) {
+				
 				for(String line; (line = br.readLine()) != null; ) {
-					if(line.length() != 0)		wordSet.add(line.toLowerCase());
-					if(wordSet.size() >= (Crypt.DIR_SIZE - 50))	break;
+					
+					if(line.length() != 0) {
+						wordSet.add(line.toLowerCase());
+					}
+					
+					if(wordSet.size() >= (Crypt.DIR_SIZE - 50)) {	break;	}
 				}
+
 			} catch(Exception ex) {	LOG.error("Builds Directory", ex);	}
 		}
 		
@@ -276,7 +291,7 @@ public class Directory {
 
 			final String path = Directory.class.getClass().getResource("/directory").getPath();
 			
-			try(PrintWriter pw = new PrintWriter(path, "UTF-8")) {
+			try(final PrintWriter pw = new PrintWriter(path, "UTF-8")) {
 
 				wordSet.forEach((word) -> {		pw.println(word.trim());	});
 				
@@ -288,7 +303,7 @@ public class Directory {
 				pw.println("%>");
 
 				// number partitioning
-				for(int i = 0; i <= 9; i++)		pw.println(i);
+				for(int i = 0; i <= 9; i++) {	pw.println(i);				}
 
 	//			// symbols
 				pw.println("`");

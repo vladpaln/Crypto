@@ -13,7 +13,7 @@ import org.slf4j.*;
 /**
  * Enigma4K GUI
  *
- * @author navaile
+ * @author vladpaln
  */
 public class UI extends javax.swing.JFrame {
 	
@@ -23,26 +23,29 @@ public class UI extends javax.swing.JFrame {
 	private UI() {
 		initComponents();
 
-		if(roCountField != null)
+		if(roCountField != null) {
 			roCountField.setText(String.valueOf(Crypt.COUNT_MIN));
+		}
 		
-		if(pbCountField != null)
+		if(pbCountField != null) {
 			pbCountField.setText(String.valueOf(Crypt.COUNT_MIN));
+		}
 		
-		if(jScrollPane1 != null)
+		if(jScrollPane1 != null) {
 			jScrollPane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		}
 		
 		if(textField != null) {
 			textField.setWrapStyleWord(false);
 			textField.setText("Your message goes here.");
 		}
 		
-		if(title != null)	title.setText("Crypto " + Crypt.VER);
+		if(title != null) {		title.setText("Crypto " + Crypt.VER);		}
 		
 		setTitle(title.getText());
 
-		URL iconURL = getClass().getResource("/icon.png");
-		ImageIcon icon = new ImageIcon(iconURL);
+		final URL iconURL = getClass().getResource("/icon.png");
+		final ImageIcon icon = new ImageIcon(iconURL);
 		super.setIconImage(icon.getImage());
 	}
 
@@ -318,26 +321,29 @@ public class UI extends javax.swing.JFrame {
 
     private void encryptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_encryptButtonActionPerformed
 
-		String passPhrase = passwordField.getText();
-		String handle = handleField.getText();
-		String roCountText = roCountField.getText();
-		String pbCountText = pbCountField.getText();
-		String dirSeedText = dirSeedField.getText();
+		final String passPhrase = passwordField.getText();
+		final String handle = handleField.getText();
+		final String roCountText = roCountField.getText();
+		final String pbCountText = pbCountField.getText();
+		final String dirSeedText = dirSeedField.getText();
 		
 		int roCount = 97, pbCount = 97;
 		Long dirSeed = null;
 
-		if(roCountText.length() != 0)
+		if(roCountText.length() != 0) {
 			try {	roCount = Integer.parseInt(roCountText);					}
 			catch(Exception e) {	LOG.error("Parse Rotor Count", e);			}
+		}
 		
-		if(pbCountText.length() != 0)
+		if(pbCountText.length() != 0) {
 			try {	pbCount = Integer.parseInt(pbCountText);					}
 			catch(Exception e) {	LOG.error("Parse Plugboard Count", e);		}
+		}
 		
-		if(dirSeedText.length() != 0 && dirSeedText.matches("[0-9]+"))	
+		if(dirSeedText.length() != 0 && dirSeedText.matches("[0-9]+")) {
 			try {	dirSeed = Long.parseLong(dirSeedText);						}
 			catch(Exception e) {	LOG.error("Parse Directory Seed", e);		}
+		}
 
 		textField.setText(Crypt.encryptText(passPhrase, handle, roCount,
 			pbCount, dirSeed, textField.getText()));
@@ -345,26 +351,29 @@ public class UI extends javax.swing.JFrame {
 
     private void decryptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decryptButtonActionPerformed
 		
-		String passPhrase = passwordField.getText();
-		String handle = handleField.getText();
-		String roCountText = roCountField.getText();
-		String pbCountText = pbCountField.getText();
-		String dirSeedText = dirSeedField.getText();
+		final String passPhrase = passwordField.getText();
+		final String handle = handleField.getText();
+		final String roCountText = roCountField.getText();
+		final String pbCountText = pbCountField.getText();
+		final String dirSeedText = dirSeedField.getText();
 		
 		int roCount = 97, pbCount = 97;
 		Long dirSeed = null;
 
-		if(roCountText.length() != 0)
+		if(roCountText.length() != 0) {
 			try {	roCount = Integer.parseInt(roCountText);					}
 			catch(Exception e) {	LOG.error("Parse Rotor Count", e);			}
+		}
 		
-		if(pbCountText.length() != 0)
+		if(pbCountText.length() != 0) {
 			try {	pbCount = Integer.parseInt(pbCountText);					}
 			catch(Exception e) {	LOG.error("Parse Plugboard Count", e);		}
+		}
 		
-		if(dirSeedText.length() != 0 && dirSeedText.matches("[0-9]+"))	
+		if(dirSeedText.length() != 0 && dirSeedText.matches("[0-9]+")) {
 			try {	dirSeed = Long.parseLong(dirSeedText);						}
 			catch(Exception e) {	LOG.error("Parse Directory Seed", e);		}
+		}
 
 		textField.setText(Crypt.decryptText(passPhrase, handle, roCount,
 			pbCount, dirSeed, textField.getText()));
@@ -411,10 +420,11 @@ public class UI extends javax.swing.JFrame {
 
 	private void focusGained(java.awt.event.FocusEvent evt) {
 		
-		if(evt.getSource() instanceof JTextComponent)
+		if(evt.getSource() instanceof JTextComponent) {
 			SwingUtilities.invokeLater(() -> {
 				((JTextComponent) evt.getSource()).selectAll();
 			});
+		}
     }
 	
 	/** @param args the command line arguments		*/

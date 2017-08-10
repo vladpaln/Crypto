@@ -48,9 +48,7 @@ public class CryptTest extends ClassParser<Crypt> {
 //			System.out.println("DIR_SIZE: " + DIR_SIZE);
 //			setField("DIR_SIZE", DIR_SIZE + 10);
 			
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+		} catch(Exception e) {	e.printStackTrace();						}
 //		DIR_SIZE = 46_655;
 		
 		// @Before called before every @Test method

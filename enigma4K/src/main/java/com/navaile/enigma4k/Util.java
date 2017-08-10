@@ -10,7 +10,7 @@ import java.util.Random;
 /**
  * General utility class.
  *
- * @author navaile
+ * @author vladpaln
  */
 public class Util {
 	

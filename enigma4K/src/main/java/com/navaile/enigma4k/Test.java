@@ -26,7 +26,7 @@ import org.apache.commons.lang3.text.StrBuilder;
  * Misc test class.
  * 
  * 
- * @author navaile
+ * @author vladpaln
  */
 public class Test {
 
@@ -261,6 +261,18 @@ public class Test {
 //		System.out.println(
 //			"this is a test".contains(" ")
 //		);
+
+
+		for(int x = 1; x <= 100; x++) {
+
+        	if(x % 3 == 0 || x % 5 == 0) {
+        		if(x % 3 == 0)	System.out.println("Fizz");
+        		if(x % 5 == 0)	System.out.println("Bizz");
+        		continue;
+        	}
+        
+        	System.out.printf("num: %d", x);
+        }
 	}
 	
 	public static List<Integer> primeFactors(int number) {
