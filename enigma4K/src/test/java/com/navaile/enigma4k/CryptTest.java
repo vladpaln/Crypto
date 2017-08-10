@@ -33,7 +33,7 @@ public class CryptTest extends ClassParser<Crypt> {
 	
 	private static final Random RND = new Random();
 	
-	private static final Crypt inst = new Crypt(PASS, HANDLE, MSG_ID, RO_COUNT, PB_COUNT, true);
+	private static final Crypt CRYPT = new Crypt(PASS, HANDLE, MSG_ID, RO_COUNT, PB_COUNT, true);
 	
 	@BeforeClass
 	public static void ini() {}
@@ -41,7 +41,7 @@ public class CryptTest extends ClassParser<Crypt> {
 	@Before
 	public void reset() {
 		
-		setInstance(inst);
+		setInstance(CRYPT);
 
 		try {
 			DIR_SIZE = getField(Integer.class, "DIR_SIZE");

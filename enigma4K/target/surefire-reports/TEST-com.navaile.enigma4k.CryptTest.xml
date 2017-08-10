@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="8" failures="0" name="com.navaile.enigma4k.CryptTest" time="0.819" errors="0" skipped="0">
+<testsuite tests="8" failures="0" name="com.navaile.enigma4k.CryptTest" time="0.86" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_40\jre\bin"/>
@@ -67,8 +67,8 @@
   <testcase classname="com.navaile.enigma4k.CryptTest" name="emptyTest" time="0"/>
   <testcase classname="com.navaile.enigma4k.CryptTest" name="setCountTest" time="0"/>
   <testcase classname="com.navaile.enigma4k.CryptTest" name="genMsgIDTest" time="0"/>
-  <testcase classname="com.navaile.enigma4k.CryptTest" name="stepRotorsTest" time="0"/>
-  <testcase classname="com.navaile.enigma4k.CryptTest" name="iniMatrixTest" time="0.235"/>
-  <testcase classname="com.navaile.enigma4k.CryptTest" name="cryptTest" time="0.579"/>
-  <testcase classname="com.navaile.enigma4k.CryptTest" name="padTextTest" time="0"/>
+  <testcase classname="com.navaile.enigma4k.CryptTest" name="stepRotorsTest" time="0.047"/>
+  <testcase classname="com.navaile.enigma4k.CryptTest" name="iniMatrixTest" time="0.198"/>
+  <testcase classname="com.navaile.enigma4k.CryptTest" name="cryptTest" time="0.609"/>
+  <testcase classname="com.navaile.enigma4k.CryptTest" name="padTextTest" time="0.001"/>
 </testsuite>
