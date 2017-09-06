@@ -49,7 +49,7 @@ public class Directory {
 	 * https://github.com/first20hours/google-10000-english
 	 */
 	
-	private static Directory dir;
+	private volatile static Directory dir;
 	
 	private static boolean ordered = true;		// directory ordered flag
 	private static String[] wordArr;			// holds word directory
@@ -72,8 +72,17 @@ public class Directory {
 	 * @return Directory Singleton
 	 */
 	public static Directory getInstance() {
+
+		Directory dir = Directory.dir;
 		
-		if(dir == null) {	dir = new Directory();							}
+		if(dir == null) {
+			synchronized(Dictionary.class) {
+				dir = Directory.dir;
+				if(dir == null) {
+					Directory.dir = dir = new Directory();
+				}
+			}
+		}
 		return dir;
 	}
 	
@@ -165,7 +174,7 @@ public class Directory {
 	 * @param text to parse
 	 * @return returns a list of words
 	 */
-	public String[] parceWords(String text) {
+	public String[] parceWords(final String text) {
 		
 		LOG.info("Directory.parceWords()");
 		return preprocess(text).split(" ");
@@ -207,7 +216,7 @@ public class Directory {
 	 * @param keyCode directory keyCode integer (index)
 	 * @return text word
 	 */
-	public String getWord(Integer keyCode) {
+	public String getWord(final Integer keyCode) {
 		
 		LOG.info("Directory.getWord()");
 		if(keyCode >= 0 && keyCode < wordArr.length) {
@@ -248,7 +257,7 @@ public class Directory {
 	 * 
 	 * @param seed directory randomization seed
 	 */
-	public void randomizeDirectory(Long seed) {
+	public void randomizeDirectory(final Long seed) {
 		
 		LOG.info("Directory.randomizeDirectory(" + seed + ")");
 		

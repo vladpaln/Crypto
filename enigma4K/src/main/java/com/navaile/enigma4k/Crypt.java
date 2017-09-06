@@ -83,14 +83,14 @@ public class Crypt {
 	 * @param pbCount plugboard count, 97 - 500
 	 * @param encrypt encryption flag, true if encrypting
 	 */
-	public Crypt(String passPhrase, String handle, String msgID, int roCount,
-			int pbCount, boolean encrypt) {
+	public Crypt(String passPhrase, final String handle, String msgID, int roCount,
+			int pbCount, final boolean encrypt) {
 
 		LOG.info("ini Crypt()");
 		LOG.info("passPhrase: " + passPhrase + ", handle: " + handle + ", msgID: " + msgID);
 
 		if(msgID == null) {	msgID = "";		}
-		passPhrase = String.join(passPhrase, handle, msgID, "!@#$%^&*()");
+		passPhrase = String.join(":", passPhrase, handle, msgID, "!@#$%^&*()");
 		RND = new Random(cryptHash(passPhrase));
 		
 		roCount = setCount(RND, roCount, COUNT_MIN, RO_COUNT_MAX);
@@ -126,7 +126,7 @@ public class Crypt {
 	 * @param max max bounds
 	 * @return value within bounds \u00B1 10% of original
 	 */
-	private int setCount(Random rnd, int count, int min, int max) {
+	private int setCount(final Random rnd, int count, final int min, final int max) {
 		count =  count < min ? min : count > max ? max : count;
 		return (int)( (count * .80) + (count * (rnd.nextFloat() * .20)) );
 	}
@@ -141,7 +141,7 @@ public class Crypt {
 	 * 
 	 * @return return matrix
 	 */
-	private int[][] iniMatrix(Random rnd, int count, int DIR_SIZE, boolean encrypt) {
+	private int[][] iniMatrix(final Random rnd, final int count, final int DIR_SIZE, final boolean encrypt) {
 		
 		int[][] matrix = new int[count][];
 		for(int i = 0; i < matrix.length; i++) {
@@ -179,7 +179,7 @@ public class Crypt {
 	 * @param roCount rotor count
 	 * @return array, each value designates spin direction for that rotor
 	 */
-	private int[] roSpin(Random rnd, int roCount) {
+	private int[] roSpin(final Random rnd, final int roCount) {
 		
 		// TODO add roKey dependency to method params
 		
@@ -199,13 +199,15 @@ public class Crypt {
 	 * @param roSpin rotor direction spin array, forward: 1, backward: -1
 	 * @param DIR_SIZE directory size
 	 */
-	private void stepRotors(Random rnd, int[] rotorIndex, int[] roSpin, int DIR_SIZE) {
+	private void stepRotors(final Random rnd, final int[] rotorIndex, final int[] roSpin, final int DIR_SIZE) {
 		
 		// TODO implementing this will change rotor spin direction randomly.
 //		if(rnd.nextDouble() > .9955)		roSpin(rnd, roCount);
 
 		for(int i = 0; i < rotorIndex.length; i++) {
+
 			rotorIndex[i] += rnd.nextInt(31) * roSpin[i];
+
 			if(rotorIndex[i] >= DIR_SIZE) {
 				rotorIndex[i] = rotorIndex[i] % DIR_SIZE;
 			}
@@ -225,7 +227,7 @@ public class Crypt {
 	 * @param DIR_SIZE directory size
 	 * @return a random key
 	 */
-	private int[] genKey(Random rnd, int roCount, int DIR_SIZE) {
+	private int[] genKey(final Random rnd, final int roCount, final int DIR_SIZE) {
 		
 		LOG.info("Crypt.genKey() Generates random rotor key.");
 		
@@ -244,7 +246,7 @@ public class Crypt {
 	 * @param roKeySize rotor key size, or rotor count
 	 * @return a new rotor order
 	 */
-	private int[] rndOrder(Random rnd, int roKeySize) {			
+	private int[] rndOrder(final Random rnd, final int roKeySize) {			
 	
 		final int[] newOrder = new int[roKeySize];
 		for(int i = 0; i < newOrder.length; i++) {	newOrder[i] = i;		}
@@ -259,7 +261,7 @@ public class Crypt {
 //	 * @param roKey current rotor key
 //	 * @return return reset rotor index
 //	 */
-//	private int[] resetKey(int[] roKey) {
+//	private int[] resetKey(final int[] roKey) {
 //		LOG.info("Crypt.resetKey() key: " + Arrays.toString(roKey));
 //		return roKey.clone();
 //	}
@@ -275,8 +277,8 @@ public class Crypt {
 	 * @param plainText text message to encrypt
 	 * @return encrypted text
 	 */
-	public static String encryptText(String passPhrase, String handle,
-		int roCount, int pbCount, Long dirSeed, String plainText) {
+	public static String encryptText(final String passPhrase, final String handle,
+		final int roCount, final int pbCount, final Long dirSeed, final String plainText) {
 		
 		String msgID = Crypt.genMsgID();
 		Crypt enigma = new Crypt(passPhrase, handle, msgID, roCount, pbCount, true);
@@ -291,7 +293,7 @@ public class Crypt {
 	 * @param plainText plaint text to be encrypted
 	 * @return crypt text
 	 */
-	private String encryptText(String plainText) {
+	private String encryptText(final String plainText) {
 		
 		LOG.info("Crypt.encryptText(" + plainText + ")");
 		
@@ -366,7 +368,7 @@ public class Crypt {
 	 * @param pbMatrix plugboard matrix
 	 * @return crypt word
 	 */
-	private int pbCrypt(int wordCode, int pbIndex, int[][] pbMatrix) {
+	private int pbCrypt(final int wordCode, final int pbIndex, final int[][] pbMatrix) {
 		
 		/* plugboard substitution
 		 * each word is substituted using a different plugboard		*/
@@ -389,8 +391,8 @@ public class Crypt {
 	 * @param DIR_SIZE directory size
 	 * @return encrypted/decrypted wordCode
 	 */
-	private int roCrypt(Random rnd, int[][] roMatrix, int[] roIndex, int wordCode,
-			boolean encrypt, int DIR_SIZE) {
+	private int roCrypt(final Random rnd, final int[][] roMatrix, final int[] roIndex, int wordCode,
+			final boolean encrypt, final int DIR_SIZE) {
 		
 		LOG.info("Crypt.roCrypt(" + wordCode + ") START");
 		
@@ -423,8 +425,8 @@ public class Crypt {
 	 * @param cryptText text message to encrypt
 	 * @return plain text
 	 */
-	public static String decryptText(String passPhrase, String handle,
-		int roCount, int pbCount, Long dirSeed, String cryptText) {
+	public static String decryptText(final String passPhrase, final String handle,
+		final int roCount, final int pbCount, final Long dirSeed, String cryptText) {
 		
 		LOG.info("Crypt.decryptText()");
 		
@@ -449,7 +451,7 @@ public class Crypt {
 	 * @param cryptText
 	 * @return plaint text
 	 */
-	private String decryptText(String cryptText) {
+	private String decryptText(final String cryptText) {
 		
 		LOG.info("Crypt.decryptText()");
 		
@@ -512,7 +514,7 @@ public class Crypt {
 	 * @param base10 base 10 integer
 	 * @return base 36 string
 	 */
-	private static String intToBase36(int base10) {
+	private static String intToBase36(final int base10) {
 		return Integer.toString(base10, Character.MAX_RADIX);
 	}
 	
@@ -523,7 +525,7 @@ public class Crypt {
 	 * 
 	 * @return base 10 integer
 	 */
-	private static int base36ToInt(String base36) {
+	private static int base36ToInt(final String base36) {
 		return Integer.parseInt(base36, Character.MAX_RADIX);
 	}
 	
@@ -533,7 +535,7 @@ public class Crypt {
 	 * @param base10 long
 	 * @return base 36 string
 	 */
-	private static String longToBase36(long base10) {
+	private static String longToBase36(final long base10) {
 		return Long.toString(base10, Character.MAX_RADIX);
 	}
 
@@ -545,7 +547,7 @@ public class Crypt {
 	 * @param pad string to use as padding
 	 * @return padded string
 	 */
-	private static String padText(String str, int minSize, String pad) {
+	private static String padText(final String str, final int minSize, final String pad) {
 
 		if((minSize - str.length()) > 0) {
 			return padText(pad + str, minSize, pad);
@@ -559,7 +561,7 @@ public class Crypt {
 	 * @param passPhrase used to generate a seed
 	 * @return generated seed
 	 */
-	private static long cryptHash(String passPhrase) {
+	private static long cryptHash(final String passPhrase) {
 
 		// java long hashCode
 //		long hash = 0;
@@ -583,7 +585,7 @@ public class Crypt {
 	 * @param DIR_SIZE directory size
 	 * @return a new rotor
 	 */
-	private static int[] genRotorPb(Random rnd, int DIR_SIZE) {
+	private static int[] genRotorPb(final Random rnd, final int DIR_SIZE) {
 
 		int[] arr = new int[DIR_SIZE];			// 46655, ZZZ
 		for(int i = 0; i < arr.length; i++) {	arr[i] = i;					}
@@ -598,7 +600,7 @@ public class Crypt {
 	 * @param arr array to invert
 	 * @return inverted array
 	 */
-	private static int[] invArr(int[] arr) {
+	private static int[] invArr(final int[] arr) {
 		
 		int[] invArr = new int[arr.length];
 		
@@ -618,7 +620,7 @@ public class Crypt {
 	 * 
 	 * @param seed random directory seed
 	 */
-	public void randomizeDirectory(Long seed) {
+	public void randomizeDirectory(final Long seed) {
 		if(DIRECT != null) {	DIRECT.randomizeDirectory(seed);			}
 	}
 	
