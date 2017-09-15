@@ -259,7 +259,7 @@ public class Directory {
 	 */
 	public void randomizeDirectory(final Long seed) {
 		
-		LOG.info("Directory.randomizeDirectory(" + seed + ")");
+		LOG.info("Directory.randomizeDirectory({})", seed);
 		
 		ordered = seed == null;
 		Arrays.sort(wordArr);

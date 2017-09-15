@@ -87,7 +87,7 @@ public class Crypt {
 			int pbCount, final boolean encrypt) {
 
 		LOG.info("ini Crypt()");
-		LOG.info("passPhrase: " + passPhrase + ", handle: " + handle + ", msgID: " + msgID);
+		LOG.info("passPhrase: {}, handle: {}, msgID: {}", passPhrase, handle, msgID);
 
 		if(msgID == null) {	msgID = "";		}
 		passPhrase = String.join(":", passPhrase, handle, msgID, "!@#$%^&*()");
@@ -96,7 +96,7 @@ public class Crypt {
 		roCount = setCount(RND, roCount, COUNT_MIN, RO_COUNT_MAX);
 		pbCount = setCount(RND, pbCount, COUNT_MIN, PB_COUNT_MAX);
 
-		LOG.info("ini Crypt(" + roCount + ", " + pbCount + ")");
+		LOG.info("ini Crypt({}, {})", roCount, pbCount);
 		
 		LOG.info("ini Crypt: genKey, copy to rotorIndex");
 		roKey = genKey(RND, roCount, DIR_SIZE);
@@ -111,10 +111,10 @@ public class Crypt {
 		
 		memory();
 		
-		LOG.info("Rotor Count: " + roCount);
-		LOG.info("Rotor Key: " + Arrays.toString(roKey));
-		LOG.info("Rotor Direction: " + Arrays.toString(roSpin));
-		LOG.info("Plugboard Count: " + pbCount);
+		LOG.info("Rotor Count: {}", roCount);
+		LOG.info("Rotor Key: {}", Arrays.toString(roKey));
+		LOG.info("Rotor Direction: {}", Arrays.toString(roSpin));
+		LOG.info("Plugboard Count: {}", pbCount);
 	}
 	
 	/**
@@ -216,7 +216,7 @@ public class Crypt {
 			}
 		}
 		
-		LOG.info("stepRotors() new rotor settings: " + Arrays.toString(rotorIndex));
+		LOG.info("stepRotors() new rotor settings: {}", Arrays.toString(rotorIndex));
 	}
 
 	/**
@@ -295,15 +295,15 @@ public class Crypt {
 	 */
 	private String encryptText(final String plainText) {
 		
-		LOG.info("Crypt.encryptText(" + plainText + ")");
+		LOG.info("Crypt.encryptText({})", plainText);
 		
 		StringBuilder debugLog = new StringBuilder();
 
 		final String[] wordList = DIRECT.parceWords(plainText.toLowerCase());
 		final List<Integer> wordCodeList = new ArrayList<>(wordList.length);
 		
-		LOG.debug("Crypt.encryptText().wordList.length: " + wordList.length);
-		LOG.debug("Crypt.encryptText().wordList.data: " + Arrays.toString(wordList));
+		LOG.debug("Crypt.encryptText().wordList.length: {}", wordList.length);
+		LOG.debug("Crypt.encryptText().wordList.data: {}", Arrays.toString(wordList));
 		
 		for(String word: wordList) {
 
@@ -312,7 +312,7 @@ public class Crypt {
 			
 			if(wordCode == null) {
 
-				LOG.debug("Crypt.encryptText letter: " + Arrays.toString(word.toCharArray()));
+				LOG.debug("Crypt.encryptText letter: {}", Arrays.toString(word.toCharArray()));
 				
 				wordCodeList.add(DIRECT.getKeyCode("<%"));
 				for(char l: word.toCharArray()) {
@@ -326,11 +326,11 @@ public class Crypt {
 		
 		LOG.debug(debugLog.toString());
 		
-		LOG.debug("Crypt.encryptText.wordCodeList: " + wordCodeList.size());
-		LOG.debug("Crypt.encryptText.wordCodeList.data: " + Arrays.toString(wordCodeList.toArray()));
+		LOG.debug("Crypt.encryptText.wordCodeList: {}", wordCodeList.size());
+		LOG.debug("Crypt.encryptText.wordCodeList.data: {}", Arrays.toString(wordCodeList.toArray()));
 		
 		// wordCodeList check
-		LOG.debug("wordCodeList: " + Arrays.toString(wordCodeList.toArray()));
+		LOG.debug("wordCodeList: {}", Arrays.toString(wordCodeList.toArray()));
 		
 		final StringBuilder strBuild = new StringBuilder();
 
@@ -373,9 +373,9 @@ public class Crypt {
 		/* plugboard substitution
 		 * each word is substituted using a different plugboard		*/
 		final int[] plugboard = pbMatrix[pbIndex];
-
-		LOG.debug("Crypt.pbCrypt(" + wordCode + ", " + pbIndex + "): pbIndex: " +
-			(pbIndex % pbMatrix.length) + ", newWordCode: " + plugboard[wordCode]);
+		
+		LOG.debug("Crypt.pbCrypt({}, {}): pbIndex: {}, newWordCode: {}",
+			wordCode, pbIndex, (pbIndex % pbMatrix.length), plugboard[wordCode]);
 		
 		return plugboard[wordCode];
 	}
@@ -394,7 +394,7 @@ public class Crypt {
 	private int roCrypt(final Random rnd, final int[][] roMatrix, final int[] roIndex, int wordCode,
 			final boolean encrypt, final int DIR_SIZE) {
 		
-		LOG.info("Crypt.roCrypt(" + wordCode + ") START");
+		LOG.info("Crypt.roCrypt({}) START", wordCode);
 		
 		final int[] roOrder = rndOrder(rnd, roMatrix.length);
 		int roID = encrypt ? 0 : roMatrix.length - 1;
